@@ -1,0 +1,6 @@
+skip_list: []
+exclude_paths:
+  - .direnv
+  - .vscode
+  - .ansible
+  - .pre-commit-config.yaml

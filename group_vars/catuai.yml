@@ -1,0 +1,16 @@
+# Check interfaces running: ip a
+netplan:
+  enabled: true
+  renderer: networkd
+  mode: "802.3ad"
+  miimon: "100"
+  lacp_rate: "fast"
+  interfaces:
+    enp1s0: {}
+    enp3s0: {}
+
+k8s:
+  enabled: true
+  packages:
+    - kubelet
+    - kubeadm

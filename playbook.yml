@@ -1,0 +1,26 @@
+- name: Home Lab Setup
+  hosts: all
+  gather_facts: true
+  pre_tasks:
+    - name: Get OS Information
+      ansible.builtin.command:
+        cmd: lsb_release -a
+      register: os_info
+      changed_when: false
+
+    - name: Print OS Information
+      ansible.builtin.debug:
+        var: os_info.stdout_lines
+  tasks:
+    - name: Install Core Deps
+      become: true
+      ansible.builtin.apt:
+        name:
+          - build-essential
+        update_cache: true
+
+  handlers: []
+
+  roles:
+    - { role: netplan, when: netplan.enabled | default(false) | bool }
+    - { role: k8s, when: k8s.enabled | default(false) | bool }

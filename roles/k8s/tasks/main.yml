@@ -1,0 +1,31 @@
+---
+# Needed for K8s setup. See https://discuss.kubernetes.io/t/swap-off-why-is-it-necessary/6879
+- name: Disable swap
+  become: true
+  ansible.builtin.command:
+    cmd: swapoff -a
+  changed_when: ansible_swaptotal_mb > 0
+  when: ansible_swaptotal_mb > 0
+
+- name: Remove swap in fstab
+  become: true
+  ansible.builtin.replace:
+    path: /etc/fstab
+    regexp: '^([^#].*swap.*)$'
+    replace: '# \1'
+
+- name: Get Stable K8s version
+  ansible.builtin.uri:
+    url: https://dl.k8s.io/release/stable.txt
+    method: GET
+    return_content: true
+  register: k8s_version_info
+  changed_when: false
+
+- name: Set K8s version fact
+  ansible.builtin.set_fact:
+    k8s_version: "{{ k8s_version_info.content | regex_replace('^v(\\d+\\.\\d+)\\..*$', 'v\\1') }}"
+
+- name: Install Apt Dependencies
+  ansible.builtin.include_tasks:
+    file: apt.yml

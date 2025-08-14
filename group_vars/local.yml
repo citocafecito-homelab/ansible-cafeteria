@@ -1,0 +1,7 @@
+k8s:
+  enabled: true
+  packages:
+    - kubectl
+
+ansible_user: "{{ lookup('env', 'ANSIBLE_LOCAL_USER') }}"
+ansible_become_password: "{{ lookup('env', 'ANSIBLE_LOCAL_PASSWORD') }}"

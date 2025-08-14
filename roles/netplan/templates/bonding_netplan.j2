@@ -1,0 +1,18 @@
+network:
+  version: 2
+  renderer: {{ netplan.renderer }}
+  ethernets:
+{% for iface in netplan.interfaces.keys() %}
+    {{ iface }}: {}
+{% endfor %}
+  bonds:
+    bond0:
+      interfaces:
+{% for iface in netplan.interfaces.keys() %}
+        - {{ iface }}
+{% endfor %}
+      parameters:
+        mode: {{ netplan.mode }}
+        lacp-rate: {{ netplan.lacp_rate }}
+        mii-monitor-interval: {{ netplan.miimon }}
+      dhcp4: true
