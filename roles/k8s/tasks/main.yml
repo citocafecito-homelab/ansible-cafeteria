@@ -29,3 +29,28 @@
 - name: Install Apt Dependencies
   ansible.builtin.include_tasks:
     file: apt.yml
+
+- name: Enable Service
+  ansible.builtin.service:
+    name: "{{ item.name }}"
+    enabled: "{{ item.enabled | default(true) | bool }}"
+    state: "{{ item.state | default('started') }}"
+  with_items:
+    - name: kubelet
+    - name: containerd
+
+- name: Install Pip Dependencies
+  ansible.builtin.pip:
+    name:
+      - pip
+      - kubernetes
+      - openshift
+    state: present
+    break_system_packages: true
+
+- name: Install K8s Core Apps
+  kubernetes.core.k8s:
+    src: "{{ item }}"
+  with_items:
+    - https://raw.githubusercontent.com/drone/charts/master/charts/drone/templates/deployment.yaml
+    - https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml

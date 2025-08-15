@@ -11,13 +11,15 @@
     - name: Print OS Information
       ansible.builtin.debug:
         var: os_info.stdout_lines
-  tasks:
+
     - name: Install Core Deps
       become: true
       ansible.builtin.apt:
         name:
           - build-essential
         update_cache: true
+
+  tasks: []
 
   handlers: []
 
