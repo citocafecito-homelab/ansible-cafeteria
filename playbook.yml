@@ -1,7 +1,11 @@
 - name: Home Lab Setup
-  hosts: all
+  hosts: cafeteria
   gather_facts: true
   pre_tasks:
+    - name: Initialize playbook
+      ansible.builtin.debug:
+        msg: "Starting Home Lab Setup in {{ inventory_hostname }}"
+
     - name: Get OS Information
       ansible.builtin.command:
         cmd: lsb_release -a
@@ -14,15 +18,33 @@
 
     - name: Install Core Deps
       become: true
-      ansible.builtin.apt:
+      ansible.builtin.package:
         name:
           - build-essential
+          - ufw
         update_cache: true
 
-  tasks: []
+  tasks:
+    # Check nftables
+    - name: UFW Setup
+      when: network.enabled | default(false) | bool
+      block:
+        - name: Open Ports
+          become: true
+          community.general.ufw:
+            rule: allow
+            port: "{{ item }}"
+            proto: tcp
+          with_items: "{{ network.ports }}"
+
+        - name: Enable UFW
+          become: true
+          community.general.ufw:
+            state: enabled
 
   handlers: []
 
   roles:
+    - { role: zerotier, when: zerotier.enabled | default(false) | bool }
     - { role: netplan, when: netplan.enabled | default(false) | bool }
     - { role: k8s, when: k8s.enabled | default(false) | bool }

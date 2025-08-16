@@ -1,0 +1,33 @@
+- name: Enable IP forwarding
+  become: true
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_set: true
+
+- name: Configure crictl to use containerd
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/crictl.yaml
+    mode: '0644'
+    content: |
+      runtime-endpoint: unix:///run/containerd/containerd.sock
+      image-endpoint: unix:///run/containerd/containerd.sock
+      timeout: 10
+      debug: false
+
+- name: Enable and start required services
+  become: true
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - containerd
+    - kubelet
+
+- name: Start Kubeadm
+  become: true
+  ansible.builtin.command:
+    cmd: "kubeadm init --pod-network-cidr={{ k8s.network.cidr }}"
+    creates: /etc/kubernetes/admin.conf

@@ -1,6 +1,6 @@
 # Check interfaces running: ip a
 netplan:
-  enabled: true
+  # enabled: true
   renderer: networkd
   mode: "802.3ad"
   miimon: "100"
@@ -11,6 +11,16 @@ netplan:
 
 k8s:
   enabled: true
+  network:
+    cidr: 10.244.0.0/16
   packages:
     - kubelet
     - kubeadm
+
+network:
+  # enabled: true
+  ports:
+    - 22
+    - 80
+    - 443
+    - 6443

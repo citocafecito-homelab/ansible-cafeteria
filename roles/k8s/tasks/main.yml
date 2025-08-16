@@ -1,56 +1,44 @@
 ---
-# Needed for K8s setup. See https://discuss.kubernetes.io/t/swap-off-why-is-it-necessary/6879
-- name: Disable swap
-  become: true
-  ansible.builtin.command:
-    cmd: swapoff -a
-  changed_when: ansible_swaptotal_mb > 0
-  when: ansible_swaptotal_mb > 0
+- name: Get K8s Stable version
+  when: k8s.version is not defined
+  block:
+    - name: Get Stable K8s version
+      ansible.builtin.uri:
+        url: https://dl.k8s.io/release/stable.txt
+        method: GET
+        return_content: true
+      register: k8s_version_info
+      changed_when: false
 
-- name: Remove swap in fstab
-  become: true
-  ansible.builtin.replace:
-    path: /etc/fstab
-    regexp: '^([^#].*swap.*)$'
-    replace: '# \1'
-
-- name: Get Stable K8s version
-  ansible.builtin.uri:
-    url: https://dl.k8s.io/release/stable.txt
-    method: GET
-    return_content: true
-  register: k8s_version_info
-  changed_when: false
+    - name: Set K8s version fact
+      ansible.builtin.set_fact:
+        k8s_version: "{{ k8s_version_info.content | regex_replace('^v(\\d+\\.\\d+)(?:\\.\\d+)?$', 'v\\1') }}"
 
 - name: Set K8s version fact
+  when: k8s.version is defined
   ansible.builtin.set_fact:
-    k8s_version: "{{ k8s_version_info.content | regex_replace('^v(\\d+\\.\\d+)\\..*$', 'v\\1') }}"
+    k8s_version: "{{ k8s.version }}"
 
-- name: Install Apt Dependencies
+- name: Install K8s Packages
   ansible.builtin.include_tasks:
-    file: apt.yml
+    file: install.yml
 
-- name: Enable Service
-  ansible.builtin.service:
-    name: "{{ item.name }}"
-    enabled: "{{ item.enabled | default(true) | bool }}"
-    state: "{{ item.state | default('started') }}"
-  with_items:
-    - name: kubelet
-    - name: containerd
+- name: Configure K8s
+  ansible.builtin.include_tasks:
+    file: configure.yml
 
-- name: Install Pip Dependencies
-  ansible.builtin.pip:
-    name:
-      - pip
-      - kubernetes
-      - openshift
-    state: present
-    break_system_packages: true
+- name: Store kubeconfig locally
+  block:
+    - name: Write .kube directory
+      delegate_to: localhost
+      ansible.builtin.file:
+        path: "{{ lookup('env', 'HOME') }}/.kube"
+        state: directory
+        mode: '0700'
 
-- name: Install K8s Core Apps
-  kubernetes.core.k8s:
-    src: "{{ item }}"
-  with_items:
-    - https://raw.githubusercontent.com/drone/charts/master/charts/drone/templates/deployment.yaml
-    - https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+    - name: Fetch admin.conf from remote to "{{ k8s_config }}"
+      become: true
+      ansible.builtin.fetch:
+        src: /etc/kubernetes/admin.conf
+        dest: "{{ k8s_config }}"
+        flat: true

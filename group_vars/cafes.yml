@@ -1,2 +1,0 @@
-ansible_user: root
-ansible_become_password: "{{ lookup('env', 'ANSIBLE_ROOT_PASSWORD') }}"
