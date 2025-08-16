@@ -18,9 +18,6 @@ k8s:
     - kubeadm
 
 network:
-  # enabled: true
+  enabled: true
   ports:
-    - 22
-    - 80
-    - 443
     - 6443

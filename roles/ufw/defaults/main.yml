@@ -1,0 +1,4 @@
+ufw_default_ports:
+  - 22
+  - 80
+  - 443
