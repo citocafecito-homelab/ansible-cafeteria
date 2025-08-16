@@ -1,1 +1,3 @@
 k8s_config: "{{ lookup('env', 'HOME') }}/.kube/{{ inventory_hostname }}-config"
+
+k8s_uninstall: false

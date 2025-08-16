@@ -2,3 +2,5 @@ ufw_default_ports:
   - 22
   - 80
   - 443
+
+ufw_uninstall: false

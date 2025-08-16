@@ -39,7 +39,7 @@
     - { role: vault, when: vault.enabled | default(false) | bool }
 
     # Database
-    - { role: postgresql, when: postgresql.enabled | default(false) | bool }
+    - { role: postgres, when: postgres.enabled | default(false) | bool }
 
     # Apps Cluster
     - { role: k8s, when: k8s.enabled | default(false) | bool }

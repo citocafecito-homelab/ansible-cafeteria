@@ -1,1 +1,3 @@
 zerotier_distribution: "{{ 'bookworm' if ansible_distribution_release == 'trixie' else ansible_distribution_release }}"
+
+zerotier_uninstall: false

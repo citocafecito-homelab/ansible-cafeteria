@@ -1,0 +1,7 @@
+- name: Setup vault
+  ansible.builtin.include_tasks:
+    file: install.yml
+
+- name: Configure Vault Server
+  ansible.builtin.include_tasks:
+    file: configure.yml
