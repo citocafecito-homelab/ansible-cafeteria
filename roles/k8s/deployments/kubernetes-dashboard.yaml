@@ -1,0 +1,114 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kubernetes-dashboard
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kubernetes-dashboard
+  namespace: kubernetes-dashboard
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    k8s-app: kubernetes-dashboard
+  name: kubernetes-dashboard
+  namespace: kubernetes-dashboard
+spec:
+  type: NodePort
+  ports:
+  - port: 443 # puerto expuesto dentro del cluster
+    targetPort: 8443 # puerto del contenedor
+    nodePort: 30443 # puerto en el nodo (elige un número libre entre 30000–32767)
+  selector:
+    k8s-app: kubernetes-dashboard
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: kubernetes-dashboard
+  name: kubernetes-dashboard
+  namespace: kubernetes-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: kubernetes-dashboard
+  template:
+    metadata:
+      labels:
+        k8s-app: kubernetes-dashboard
+    spec:
+      containers:
+      - name: kubernetes-dashboard
+        image: kubernetesui/dashboard:v2.7.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8443
+          protocol: TCP
+        args:
+        - --auto-generate-certificates
+        livenessProbe:
+          httpGet:
+            scheme: HTTPS
+            path: /
+            port: 8443
+          initialDelaySeconds: 30
+          timeoutSeconds: 30
+      serviceAccountName: kubernetes-dashboard
+      nodeSelector:
+        "kubernetes.io/os": linux
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kubernetes-dashboard-certs
+  namespace: kubernetes-dashboard
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kubernetes-dashboard-csrf
+  namespace: kubernetes-dashboard
+  labels:
+    k8s-app: kubernetes-dashboard
+type: Opaque
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kubernetes-dashboard-key-holder
+  namespace: kubernetes-dashboard
+  labels:
+    k8s-app: kubernetes-dashboard
+type: Opaque
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kubernetes-dashboard-settings
+  namespace: kubernetes-dashboard
+  labels:
+    k8s-app: kubernetes-dashboard
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin-user
+  namespace: kubernetes-dashboard
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin-user
+  namespace: kubernetes-dashboard

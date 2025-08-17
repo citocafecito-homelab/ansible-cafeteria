@@ -1,7 +1,7 @@
 ---
 - name: NetPlan Setup
   become: true
-  when: netplan_uninstall
+  when: not netplan_uninstall
   block:
     - name: Install Networking Deps
       ansible.builtin.package:
@@ -23,6 +23,6 @@
       changed_when: bond_config.changed
 
 - name: Uninstall Netplan
-  when: not netplan_uninstall
+  when: netplan_uninstall
   ansible.builtin.include_tasks:
     file: uninstall.yml

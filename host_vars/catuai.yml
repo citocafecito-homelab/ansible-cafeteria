@@ -1,6 +1,6 @@
 # Check interfaces running: ip a
 netplan:
-  # enabled: true
+  enabled: true
   renderer: networkd
   mode: "802.3ad"
   miimon: "100"
@@ -20,4 +20,8 @@ k8s:
 network:
   enabled: true
   ports:
-    - 6443
+    - 6443 # K8s API Server
+    - 30443 # K8s Dashboard
+
+homeassistant:
+  enabled: true

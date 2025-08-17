@@ -1,3 +1,7 @@
 k8s_config: "{{ lookup('env', 'HOME') }}/.kube/{{ inventory_hostname }}-config"
 
 k8s_uninstall: false
+
+k8s_version: "1.33.0"
+k8s_cluster_name: "kubernetes"
+k8s_pod_subnet: "10.244.0.0/16"

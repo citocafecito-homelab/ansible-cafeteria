@@ -1,9 +1,7 @@
 - name: Setup Applications
-  delegate_to: localhost
   block:
     - name: Install Remote Core Apps
       kubernetes.core.k8s:
-        kubeconfig: "{{ k8s_config }}"
         src: "{{ item }}"
       with_items:
         - https://raw.githubusercontent.com/drone/charts/master/charts/drone/templates/deployment.yaml
@@ -11,17 +9,6 @@
 
     - name: Apply Local Deployments
       kubernetes.core.k8s:
-        kubeconfig: "{{ k8s_config }}"
         src: "{{ item }}"
       with_fileglob:
-        - "deployments/*.yaml"
-
-- name: Check if API server is listening on 6443
-  ansible.builtin.command:
-    cmd: "ss -lntp | grep 6443 || true"
-  changed_when: false
-  register: apiserver_port
-
-- name: Show API server port status
-  ansible.builtin.debug:
-    msg: "{{ apiserver_port.stdout | default('API server is not listening on 6443') }}"
+        - "../deployments/*.yaml"

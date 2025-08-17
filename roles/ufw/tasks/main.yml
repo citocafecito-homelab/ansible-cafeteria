@@ -1,10 +1,20 @@
 ---
-- name: Setup UFW
-  when: not ufw_uninstall
-  ansible.builtin.include_tasks:
-    file: install.yml
+- name: Install UFW
+  become: true
+  ansible.builtin.package:
+    name: ufw
+    state: "{{ 'absent' if ufw_uninstall else 'present' }}"
 
-- name: Uninstall UFW
-  when: ufw_uninstall
-  ansible.builtin.include_tasks:
-    file: uninstall.yml
+- name: Open Ports
+  when: not ufw_uninstall
+  become: true
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  with_items: "{{ merge(network.ports, ufw_default_ports) }}"
+
+- name: Enable UFW
+  become: true
+  community.general.ufw:
+    state: "{{ 'disabled' if ufw_uninstall else 'enabled' }}"

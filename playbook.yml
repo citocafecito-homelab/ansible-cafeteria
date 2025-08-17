@@ -42,4 +42,6 @@
     - { role: postgres, when: postgres.enabled | default(false) | bool }
 
     # Apps Cluster
-    - { role: k8s, when: k8s.enabled | default(false) | bool }
+    - role: k8s
+      when: k8s.enabled | default(false) | bool
+      vars: { k8s_cluster_name: "kubernetes", k8s_pod_subnet: "{{ k8s.network.cidr }}" }

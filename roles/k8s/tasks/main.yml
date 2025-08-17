@@ -1,23 +1,7 @@
 ---
-- name: Get K8s Stable version
-  when: k8s.version is not defined
-  block:
-    - name: Get Stable K8s version
-      ansible.builtin.uri:
-        url: https://dl.k8s.io/release/stable.txt
-        method: GET
-        return_content: true
-      register: k8s_version_info
-      changed_when: false
-
-    - name: Set K8s version fact
-      ansible.builtin.set_fact:
-        k8s_version: "{{ k8s_version_info.content | regex_replace('^v(\\d+\\.\\d+)(?:\\.\\d+)?$', 'v\\1') }}"
-
-- name: Set K8s version fact
-  when: k8s.version is defined
-  ansible.builtin.set_fact:
-    k8s_version: "{{ k8s.version }}"
+- name: Prepare Swap Configuration
+  ansible.builtin.include_tasks:
+    file: swap.yml
 
 - name: Install K8s Packages
   ansible.builtin.include_tasks:
@@ -25,20 +9,13 @@
 
 - name: Configure K8s
   ansible.builtin.include_tasks:
-    file: configure.yml
+    file: init.yml
 
-- name: Store kubeconfig locally
-  block:
-    - name: Write .kube directory
-      delegate_to: localhost
-      ansible.builtin.file:
-        path: "{{ lookup('env', 'HOME') }}/.kube"
-        state: directory
-        mode: '0700'
+- name: Setup KubeConfig
+  ansible.builtin.include_tasks:
+    file: kubeconfig.yml
 
-    - name: Fetch admin.conf from remote to "{{ k8s_config }}"
-      become: true
-      ansible.builtin.fetch:
-        src: /etc/kubernetes/admin.conf
-        dest: "{{ k8s_config }}"
-        flat: true
+- name: Deploy Applications
+  when: false
+  ansible.builtin.include_tasks:
+    file: deploy.yml
