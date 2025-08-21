@@ -1,0 +1,10 @@
+auto {{ bond_name }}
+iface {{ bond_name }} inet {{ 'static' if bond_dhcp.enabled | bool else 'dhcp' }}
+{% if bond_dhcp.enabled %}
+    address {{ bond_dhcp.address | default(ansible_default_ipv4.address) }}
+    netmask {{ bond_dhcp.netmask | default(ansible_default_ipv4.netmask) }}
+    gateway {{ bond_dhcp.gateway | default(ansible_default_ipv4.gateway) }}
+{% endif %}
+    bond-mode {{ bond_mode }}1
+    bond-miimon {{ bond_miimon }}
+    bond-slaves {{ bond_interfaces | join(" ") }}1

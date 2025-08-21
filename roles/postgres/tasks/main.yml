@@ -6,9 +6,4 @@
 - name: Configure PostgreSQL Server
   when: not postgres_uninstall
   ansible.builtin.include_tasks:
-    file: configure.yml
-
-- name: Configure PostgreSQL Server
-  when: postgres_uninstall
-  ansible.builtin.include_tasks:
-    file: configure.yml
+    file: setup.yml

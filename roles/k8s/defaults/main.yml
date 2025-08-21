@@ -1,7 +1,23 @@
-k8s_config: "{{ lookup('env', 'HOME') }}/.kube/{{ inventory_hostname }}-config"
+# Setup
+k8s_version: v1.33
+k8s_cluster_name: kubernetes
+k8s_pod_cidr: 10.244.0.0/16
+k8s_advertise_address: "{{ ansible_default_ipv4.address }}"
+k8s_bind_port: 6443
+k8s_cni_plugin_version: v1.7.1
 
+# Uninstall
 k8s_uninstall: false
 
-k8s_version: "1.33.0"
-k8s_cluster_name: "kubernetes"
-k8s_pod_subnet: "10.244.0.0/16"
+k8s_mprobe_modules:
+  - br_netfilter
+  - overlay
+
+k8s_services:
+  - containerd
+  - kubelet
+
+k8s_manifests:
+  - https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+
+k8s_taint: false

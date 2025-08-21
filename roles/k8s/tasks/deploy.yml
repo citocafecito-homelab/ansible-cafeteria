@@ -1,14 +1,16 @@
-- name: Setup Applications
-  block:
-    - name: Install Remote Core Apps
-      kubernetes.core.k8s:
-        src: "{{ item }}"
-      with_items:
-        - https://raw.githubusercontent.com/drone/charts/master/charts/drone/templates/deployment.yaml
-        - https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+# kubectl taint nodes --all node-role.kubernetes.io/control-plane- || true
 
-    - name: Apply Local Deployments
-      kubernetes.core.k8s:
-        src: "{{ item }}"
-      with_fileglob:
-        - "../deployments/*.yaml"
+- name: Install Remote Core Apps
+  kubernetes.core.k8s:
+    src: "{{ item }}"
+  with_items: "{{ k8s_manifests }}"
+
+- name: Taint Update
+  kubernetes.core.k8s_taint:
+    name: "{{ ansible_nodename | lower }}"
+    taints:
+      - key: node-role.kubernetes.io/control-plane
+        effect: NoSchedule
+        state: absent
+  when: k8s_taint | bool
+  changed_when: true

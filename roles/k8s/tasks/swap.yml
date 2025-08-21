@@ -1,14 +1,13 @@
-# Needed for K8s setup. See https://discuss.kubernetes.io/t/swap-off-why-is-it-necessary/6879
-- name: Disable swap
-  become: true
-  ansible.builtin.command:
-    cmd: swapoff -a
-  changed_when: ansible_swaptotal_mb > 0
-  when: ansible_swaptotal_mb > 0
-
 - name: Remove swap in fstab
   become: true
   ansible.builtin.replace:
     path: /etc/fstab
     regexp: '^([^#].*swap.*)$'
     replace: '# \1'
+
+- name: Disable swap
+  become: true
+  ansible.builtin.command:
+    cmd: swapoff -a
+  changed_when: ansible_swaptotal_mb > 0
+  when: ansible_swaptotal_mb > 0

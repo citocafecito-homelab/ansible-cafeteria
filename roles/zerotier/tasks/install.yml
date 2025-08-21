@@ -1,18 +1,20 @@
-- name: Download & Save GPG Key for ZeroTier
+- name: Write GPG Keyring for Debian based
   become: true
-  ansible.builtin.get_url:
-    url: "https://raw.githubusercontent.com/zerotier/ZeroTierOne/main/doc/contact%40zerotier.com.gpg"
-    dest: /usr/share/keyrings/zerotier-archive-keyring.gpg
-    mode: '0644'
+  when: ansible_os_family == "Debian"
+  block:
+    - name: Download & Save GPG Key for ZeroTier
+      ansible.builtin.get_url:
+        url: "https://raw.githubusercontent.com/zerotier/ZeroTierOne/main/doc/contact%40zerotier.com.gpg"
+        dest: /usr/share/keyrings/zerotier-archive-keyring.gpg
+        mode: '0644'
 
-- name: Add ZeroTier repository
-  become: true
-  ansible.builtin.apt_repository:
-    repo: >-
-      deb [signed-by=/usr/share/keyrings/zerotier-archive-keyring.gpg]
-      http://download.zerotier.com/debian/{{ zerotier_distribution }} {{ zerotier_distribution }} main
-    filename: zerotier
-    update_cache: true
+    - name: Add ZeroTier repository
+      ansible.builtin.apt_repository:
+        repo: >-
+          deb [signed-by=/usr/share/keyrings/zerotier-archive-keyring.gpg]
+          http://download.zerotier.com/debian/{{ zerotier_distribution }} {{ zerotier_distribution }} main
+        filename: zerotier
+        update_cache: true
 
 - name: Install Zerotier
   become: true

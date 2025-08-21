@@ -12,7 +12,7 @@
     rule: allow
     port: "{{ item }}"
     proto: tcp
-  with_items: "{{ merge(network.ports, ufw_default_ports) }}"
+  with_items: "{{ merge(ufw_ports, ufw_default_ports) }}"
 
 - name: Enable UFW
   become: true

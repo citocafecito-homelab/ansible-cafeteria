@@ -1,0 +1,14 @@
+- name: Ensure Kubernetes repo GPG key is present
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://pkgs.k8s.io/core:/stable:/{{ k8s_version }}/rpm/repodata/repomd.xml.key
+
+- name: Add Kubernetes repository
+  ansible.builtin.yum_repository:
+    name: kubernetes
+    description: Kubernetes
+    baseurl: https://pkgs.k8s.io/core:/stable:/{{ k8s_version }}/rpm/
+    gpgcheck: true
+    repo_gpgcheck: true
+    gpgkey: https://pkgs.k8s.io/core:/stable:/{{ k8s_version }}/rpm/repodata/repomd.xml.key
+    enabled: true

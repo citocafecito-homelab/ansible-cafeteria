@@ -1,27 +1,14 @@
-# Check interfaces running: ip a
-netplan:
-  enabled: true
-  renderer: networkd
-  mode: "802.3ad"
-  miimon: "100"
-  lacp_rate: "fast"
-  interfaces:
-    enp1s0: {}
-    enp3s0: {}
+# LACP Variables
+# bond_enabled: true
+bond_dhcp:
+  # enabled: true
+  address: 192.168.1.10
+  gateway: 192.168.1.1
+bond_interfaces: [enp1s0, enp3s0]
 
-k8s:
-  enabled: true
-  network:
-    cidr: 10.244.0.0/16
-  packages:
-    - kubelet
-    - kubeadm
+# Zerotier
+zerotier_enabled: true
 
-network:
-  enabled: true
-  ports:
-    - 6443 # K8s API Server
-    - 30443 # K8s Dashboard
-
-homeassistant:
-  enabled: true
+# Kubernetes with KubeAdmin
+k8s_enabled: true
+k8s_taint: true

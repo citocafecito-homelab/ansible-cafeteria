@@ -1,21 +1,33 @@
 ---
-- name: Prepare Swap Configuration
-  ansible.builtin.include_tasks:
-    file: swap.yml
+# See https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
+- name: Setup K8s Cluster
+  when: not k8s_uninstall
+  block:
+    - name: Prepare Swap Configuration
+      ansible.builtin.include_tasks:
+        file: swap.yml
 
-- name: Install K8s Packages
-  ansible.builtin.include_tasks:
-    file: install.yml
+    - name: Configure System
+      ansible.builtin.include_tasks:
+        file: sysctl.yml
 
-- name: Configure K8s
-  ansible.builtin.include_tasks:
-    file: init.yml
+    - name: Install K8s Packages
+      ansible.builtin.include_tasks:
+        file: install.yml
 
-- name: Setup KubeConfig
-  ansible.builtin.include_tasks:
-    file: kubeconfig.yml
+    - name: Configure K8s
+      ansible.builtin.include_tasks:
+        file: init.yml
 
-- name: Deploy Applications
-  when: false
+    - name: Setup KubeConfig
+      ansible.builtin.include_tasks:
+        file: kubeconfig.yml
+
+    - name: Deploy Applications
+      ansible.builtin.include_tasks:
+        file: deploy.yml
+
+- name: Uninstall K8s Cluster
+  when: k8s_uninstall | bool
   ansible.builtin.include_tasks:
-    file: deploy.yml
+    file: uninstall.yml

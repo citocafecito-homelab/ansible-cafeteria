@@ -1,0 +1,25 @@
+- name: Install Core Deps
+  become: true
+  ansible.builtin.package:
+    name:
+      - ifenslave
+
+- name: Load required modules
+  become: true
+  community.general.modprobe:
+    name: bonding
+
+- name: Create Bond Network Config
+  become: true
+  ansible.builtin.template:
+    src: bond.network.j2
+    dest: /etc/network/interfaces.d/bond0.network
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Restart Network Service
+  become: true
+  ansible.builtin.systemd:
+    name: networking
+    state: restarted

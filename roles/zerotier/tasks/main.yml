@@ -1,3 +1,7 @@
+- name: Install
+  ansible.builtin.include_tasks:
+    file: install.yml
+
 - name: Ensure ZeroTier is joined to the network
   become: true
   ansible.builtin.command:

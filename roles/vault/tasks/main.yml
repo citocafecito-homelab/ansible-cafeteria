@@ -4,4 +4,4 @@
 
 - name: Configure Vault Server
   ansible.builtin.include_tasks:
-    file: configure.yml
+    file: setup.yml

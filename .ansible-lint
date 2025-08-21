@@ -1,5 +1,6 @@
 skip_list: []
 exclude_paths:
+- k8s
 - roles/k8s/deployments
 - roles/*/files/*.yaml
 - .direnv

@@ -1,0 +1,7 @@
+bond_name: bond0
+bond_mode: 802.3ad
+bond_miimon: 100
+bond_lacp_rate: fast
+bond_dhcp:
+  enabled: false
+bond_interfaces: "{{ undef() }}"

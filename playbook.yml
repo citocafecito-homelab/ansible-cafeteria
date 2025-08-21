@@ -23,17 +23,11 @@
           - build-essential
         update_cache: true
 
-  tasks: []
-
   roles:
-    # Enable Ports
-    - { role: ufw, when: ufw.enabled | default(false) | bool }
+    - { role: bond, when: bond_enabled | default(false) | bool }
 
     # Expose Local Network to Internet
-    - { role: zerotier, when: zerotier.enabled | default(false) | bool }
-
-    # Advanced network configuration
-    - { role: netplan, when: netplan.enabled | default(false) | bool }
+    - { role: zerotier, when: zerotier_enabled | default(false) | bool }
 
     # Secret manager
     - { role: vault, when: vault.enabled | default(false) | bool }
@@ -42,6 +36,4 @@
     - { role: postgres, when: postgres.enabled | default(false) | bool }
 
     # Apps Cluster
-    - role: k8s
-      when: k8s.enabled | default(false) | bool
-      vars: { k8s_cluster_name: "kubernetes", k8s_pod_subnet: "{{ k8s.network.cidr }}" }
+    - { role: k8s, when: k8s_enabled | default(false) | bool }
