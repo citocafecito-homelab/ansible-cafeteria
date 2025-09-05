@@ -7,7 +7,9 @@ bond_dhcp:
 bond_interfaces: [enp1s0, enp3s0]
 
 # Zerotier
-zerotier_enabled: true
+zerotier_enabled: false
+
+bluetooth_enabled: true
 
 # Kubernetes with KubeAdmin
 k8s_enabled: true

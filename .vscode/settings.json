@@ -1,3 +1,36 @@
 {
-  "ansible.python.interpreterPath": "/bin/python3"
+  "ansible.python.interpreterPath": "/bin/python3",
+  // ===== YAML y Kubernetes sólo en carpeta k8s =====
+  "yaml.schemas": {
+    "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.34.0-standalone/all.json": [
+      "k8s/**/*.yaml"
+    ]
+  },
+  "yaml.format.enable": true,
+  "yaml.schemaStore.enable": false,
+  "yaml.validate": false,
+  "yaml.hover": true,
+  "yaml.completion": true,
+  // ===== Editor =====
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "editor.rulers": [
+    80,
+    120
+  ],
+  "editor.minimap.enabled": false,
+  // ===== Kubernetes extension =====
+  "vs-kubernetes": {
+    "vs-kubernetes.kubeconfig-path": "~/.kube/Catuai-config",
+    "vs-kubernetes.kubectl-path": "kubectl"
+  },
+  // ===== Error Lens (para ver errores inline) =====
+  "errorLens.enabled": true,
+  "errorLens.fontWeight": "bold",
+  "errorLens.fontStyleItalic": true,
+  "errorLens.margin": "2em",
+  // ===== Asociaciones de archivos =====
+  "files.associations": {
+    "k8s/**/*.yaml": "yaml"
+  }
 }

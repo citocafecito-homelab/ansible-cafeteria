@@ -1,0 +1,18 @@
+- name: Install bluez
+  become: true
+  ansible.builtin.package:
+    name: bluez
+
+- name: Asegurar que el directorio /etc/bluetooth exista y tenga los permisos correctos
+  become: true
+  ansible.builtin.file:
+    path: /etc/bluetooth
+    state: directory
+    mode: '0555'
+
+- name: Ensure Bluetooth service is running and enabled
+  become: true
+  ansible.builtin.systemd:
+    name: bluetooth
+    state: started
+    enabled: true

@@ -24,6 +24,10 @@
         update_cache: true
 
   roles:
+    # Bluetooth
+    - { role: bluetooth, when: bluetooth_enabled | default(false) | bool }
+
+    # Bond Multi Ethernet
     - { role: bond, when: bond_enabled | default(false) | bool }
 
     # Expose Local Network to Internet
