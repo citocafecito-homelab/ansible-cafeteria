@@ -1,2 +1,4 @@
-ansible_user: "{{ lookup('env', 'ANSIBLE_LOCAL_USER') }}"
-ansible_become_password: "{{ lookup('env', 'ANSIBLE_LOCAL_PASSWORD') }}"
+infisical_secrets: "{{ lookup('infisical.vault.read_secrets', project_id='46928b-896a-4ffa-9a78-9c528e198689') }}"
+
+ansible_user: "{{ infisical_secrets['ANSIBLE_LOCAL_USER'] }}"
+ansible_become_password: "{{ infisical_secrets['ANSIBLE_ROOT_PASSWORD'] }}"
