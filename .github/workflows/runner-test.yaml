@@ -3,6 +3,6 @@ on:
   workflow_dispatch:
 jobs:
   test:
-    runs-on: k8s-runner
+    runs-on: [self-hosted, linux, x64, citocafecito-runner]
     steps:
       - run: echo "✅ ARC runner funcionando en namespace apps-github"
