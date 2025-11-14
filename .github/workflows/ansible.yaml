@@ -5,6 +5,9 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - "**/**.md"
+      - ".ansible-lint"
 
 jobs:
   playbook:
@@ -13,9 +16,14 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v5
 
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          cache: "pip"
+          python-version-file: ".python-version"
+
       - name: "Install Ansible"
         run: |
-          pip3 install --upgrade pip
           pip3 install -r requirements.txt
           ansible-galaxy collection install -r requirements.yml
 
