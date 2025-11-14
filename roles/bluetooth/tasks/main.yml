@@ -1,7 +1,9 @@
 - name: Install bluez
   become: true
   ansible.builtin.package:
-    name: bluez
+    name: 
+      - bluez
+      - bluez-tools
 
 - name: Asegurar que el directorio /etc/bluetooth exista y tenga los permisos correctos
   become: true

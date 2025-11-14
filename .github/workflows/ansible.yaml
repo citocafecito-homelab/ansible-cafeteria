@@ -1,0 +1,33 @@
+name: Update Server via Ansible
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  playbook:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+
+      - name: Install Ansible
+        id: ansible
+        uses: rishabhc32/install-ansible
+        with:
+          python-version: "3.12"
+          ansible-package: "ansible==12.0.0"
+
+      - name: Configure SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf "Host *\n  StrictHostKeyChecking no\n" > ~/.ssh/config
+
+      - name: Run Ansible playbook
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "False"
+        run: ansible-playbook playbook.yml

@@ -1,9 +1,0 @@
-name: Test ARC Runner
-on:
-  workflow_dispatch:
-jobs:
-  test:
-    # runs-on: [self-hosted, citocafecito-runner]
-    runs-on: self-hosted
-    steps:
-      - run: echo "✅ ARC runner funcionando en namespace apps-github"
