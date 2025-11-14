@@ -22,7 +22,7 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_KEY }}" > ~/.ssh/barista@catuai
-          chmod 600 ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/barista@catuai
           printf "Host *\n  StrictHostKeyChecking no\n" > ~/.ssh/config
 
       - name: Run Ansible playbook
