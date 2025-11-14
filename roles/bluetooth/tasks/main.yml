@@ -1,7 +1,7 @@
 - name: Install bluez
   become: true
   ansible.builtin.package:
-    name: 
+    name:
       - bluez
       - bluez-tools
 
