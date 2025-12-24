@@ -14,3 +14,5 @@ bluetooth_enabled: true
 # Kubernetes with KubeAdmin
 k8s_enabled: true
 k8s_taint: true
+
+graphics: intel

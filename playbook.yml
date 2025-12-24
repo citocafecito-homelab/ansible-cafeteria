@@ -27,6 +27,9 @@
     # Bluetooth
     - { role: bluetooth, when: bluetooth_enabled | default(false) | bool }
 
+    # Intel Graphics (VA-API / Quick Sync)
+    - { role: intel-graphics, when: graphics == "intel" }
+
     # Bond Multi Ethernet
     - { role: bond, when: bond_enabled | default(false) | bool }
 
