@@ -19,14 +19,6 @@
       ansible.builtin.include_tasks:
         file: init.yml
 
-    - name: Setup KubeConfig
-      ansible.builtin.include_tasks:
-        file: kubeconfig.yml
-
-    - name: Deploy Applications
-      ansible.builtin.include_tasks:
-        file: deploy.yml
-
 - name: Uninstall K8s Cluster
   when: k8s_uninstall | bool
   ansible.builtin.include_tasks:

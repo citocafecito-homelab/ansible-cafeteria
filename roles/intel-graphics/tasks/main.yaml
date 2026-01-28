@@ -1,10 +1,16 @@
+---
 - name: Install Core Deps
   become: true
   ansible.builtin.package:
     name:
-      - vainfo
       - intel-media-va-driver
-      - intel-media-va-driver-non-free
+      - firmware-intel-graphics
+      - firmware-linux-nonfree
+      - vainfo
+      - libva2
+      - libva-drm2
+      - libva-x11-2
+      - intel-gpu-tools
 
 - name: Verify /dev/dri exists
   stat:

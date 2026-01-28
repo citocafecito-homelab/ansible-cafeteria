@@ -1,3 +1,9 @@
+- name: Init kubeadm
+  become: true
+  ansible.builtin.command:
+    cmd: kubeadm init --pod-network-cidr={{ k8s_pod_cidr }}
+    creates: /etc/kubernetes/admin.conf
+
 - name: Create Local Kube Config
   block:
     - name: Write .kube directory
@@ -37,3 +43,33 @@
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
         mode: '0600'
+- name: Install Remote Core Apps
+  kubernetes.core.k8s:
+    src: "{{ item }}"
+  with_items: "{{ k8s_manifests | default([]) }}"
+
+# kubectl taint nodes --all node-role.kubernetes.io/control-plane- || true
+- name: Taint Update
+  kubernetes.core.k8s_taint:
+    name: "{{ ansible_nodename | lower }}"
+    taints:
+      - key: node-role.kubernetes.io/control-plane
+        effect: NoSchedule
+        state: absent
+  when: k8s_taint | default(false) | bool
+  changed_when: true
+
+
+- name: Setup Worker token
+  block:
+    - name: Generate kubeadm join command
+      ansible.builtin.command:
+        cmd: kubeadm token create --print-join-command
+      register: kubeadm_join
+      run_once: true
+
+    - name: Store join command globally
+      set_fact:
+        k8s_join_command: "{{ kubeadm_join.stdout }}"
+      delegate_to: localhost
+      run_once: true

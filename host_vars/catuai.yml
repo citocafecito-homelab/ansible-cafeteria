@@ -1,3 +1,4 @@
+
 # LACP Variables
 # bond_enabled: true
 bond_dhcp:
@@ -9,10 +10,12 @@ bond_interfaces: [enp1s0, enp3s0]
 # Zerotier
 zerotier_enabled: false
 
+# Bluetooth
 bluetooth_enabled: true
 
-# Kubernetes with KubeAdmin
+# Kubernetes
 k8s_enabled: true
-k8s_taint: true
+k8s_pod_cidr: 10.244.0.0/16
 
+# Graphics
 graphics: intel

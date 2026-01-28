@@ -6,11 +6,13 @@
     mode: '0644'
 
 - name: Write GPG Keyring
+  become: true
   ansible.builtin.command:
     cmd: "gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg /etc/apt/keyrings/kubernetes-release.key"
     creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
 - name: Add Kubernetes repository for {{ k8s_version }}
+  become: true
   ansible.builtin.apt_repository:
     repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/{{ k8s_version }}/deb/ /"
     filename: kubernetes

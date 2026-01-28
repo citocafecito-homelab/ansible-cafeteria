@@ -1,7 +1,6 @@
 # Setup
 k8s_version: v1.33
 k8s_cluster_name: kubernetes
-k8s_pod_cidr: 10.244.0.0/16
 k8s_advertise_address: "{{ ansible_default_ipv4.address }}"
 k8s_bind_port: 6443
 k8s_cni_plugin_version: v1.7.1
@@ -12,21 +11,6 @@ k8s_uninstall: false
 k8s_mprobe_modules:
   - br_netfilter
   - overlay
-
-k8s_services:
-  - containerd
-  - kubelet
-
-k8s_manifests:
-  # CNI
-  - https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
-  # Cert Manager
-  - "https://github.com/cert-manager/cert-manager/releases/download/v1.18.2/cert-manager.yaml"
-  # Metrics
-  # - https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
-  # - https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/high-availability.yaml
-  # Expose Network
-  # - https://raw.githubusercontent.com/metallb/metallb/v0.15.2/config/manifests/metallb-native.yaml
 
 # Si falla instalar: kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 k8s_taint: false

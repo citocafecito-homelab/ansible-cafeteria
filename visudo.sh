@@ -34,4 +34,4 @@ chown root:root "/etc/sudoers.d/$USER_NAME"
 
 echo "[5/5] Listo. El usuario $USER_NAME ahora tiene sudo sin contraseña."
 
-ssh-copy-id -i ~/.ssh/barista@catuai.pub barista@192.168.1.10
+# ssh-copy-id -i ~/.ssh/barista@catuai.pub barista@192.168.1.11

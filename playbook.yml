@@ -2,26 +2,9 @@
   hosts: cafeteria
   gather_facts: true
   pre_tasks:
-    - name: Initialize playbook
-      ansible.builtin.debug:
-        msg: "Starting Home Lab Setup in {{ inventory_hostname }}"
-
-    - name: Get OS Information
-      ansible.builtin.command:
-        cmd: lsb_release -a
-      register: os_info
-      changed_when: false
-
-    - name: Print OS Information
-      ansible.builtin.debug:
-        var: os_info.stdout_lines
-
-    - name: Install Core Deps
-      become: true
-      ansible.builtin.package:
-        name:
-          - build-essential
-        update_cache: true
+    - name: Pre Tasks
+      ansible.builtin.include_tasks:
+        file: tasks/prepare.yml
 
   roles:
     # Bluetooth
@@ -42,5 +25,33 @@
     # Database
     - { role: postgres, when: postgres.enabled | default(false) | bool }
 
+- name: K8s Nodes
+  hosts: k8s_nodes
+  gather_facts: true
+  roles:
     # Apps Cluster
-    - { role: k8s, when: k8s_enabled | default(false) | bool }
+    - { role: k8s }
+
+- name: K8s Control Plane
+  hosts: k8s_control_plane
+  gather_facts: true
+  tasks:
+    - name: Generate kubeadm join command
+      ansible.builtin.command:
+        cmd: kubeadm token create --print-join-command
+      register: kubeadm_join_cmd
+      changed_when: false
+
+    - name: Set join command as fact
+      set_fact:
+        kubeadm_join_command: "{{ kubeadm_join_cmd.stdout }}"
+
+- name: K8s Workers
+  hosts: k8s_workers
+  gather_facts: true
+  tasks:
+    - name: Join worker to cluster
+      become: true
+      ansible.builtin.command:
+        cmd: "{{ hostvars[groups['k8s_control_plane'][0]].kubeadm_join_command }}"
+        creates: /var/lib/kubelet/config.yaml
