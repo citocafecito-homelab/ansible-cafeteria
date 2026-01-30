@@ -72,13 +72,12 @@ jobs:
 
           ssh-keygen -t ed25519 -f ~/.ssh/id_barista -N "" -q
 
-          if ! vault write -field=signed_key ssh-client-signer/sign/ansible-role \
-              public_key=@$HOME/.ssh/id_barista.pub \
-              valid_principals="barista" \
-              extensions='{"permit-pty":""}' > ~/.ssh/id_barista-cert.pub; then
-            echo "ERROR: Vault no pudo firmar la llave"
-            exit 1
-          fi
+          vault write -field=signed_key ssh-client-signer/sign/ansible-role - > ~/.ssh/id_barista-cert.pub <<EOH
+          {
+            "public_key": "$(cat ~/.ssh/id_barista.pub)",
+            "valid_principals": "barista"
+          }
+          EOH
 
           # Verificar que el archivo existe y tiene contenido
           ls -l ~/.ssh/id_barista-cert.pub
