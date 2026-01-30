@@ -39,13 +39,6 @@ jobs:
           pip3 install -r requirements.txt
           ansible-galaxy collection install -r requirements.yml
       
-      # - name: Ensure SSH Client
-      #   run: |
-      #     # Asegura que ssh-keygen y el binario ssh existan
-      #     if ! command -v ssh &> /dev/null; then
-      #       sudo apt-get update && sudo apt-get install -y openssh-client
-      #     fi
-      
       - name: Auth with Vault (OIDC)
         uses: hashicorp/vault-action@v3
         with:
@@ -54,6 +47,13 @@ jobs:
           role: "github-ansible-role"
           jwtGithubAudience: "https://github.com/citocafecito-homelab" 
           exportToken: true
+      
+      - name: Ensure SSH Client
+        run: |
+          # Asegura que ssh-keygen y el binario ssh existan
+          if ! command -v ssh &> /dev/null; then
+            sudo apt-get update && sudo apt-get install -y openssh-client
+          fi
 
       - name: Setup SSH and Sign Key
         env:
