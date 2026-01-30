@@ -85,10 +85,19 @@ jobs:
           ##
           # Request signed SSH certificate from Vault
           ##
+          vault write ssh-client-signer/sign/ansible-role <<"EOH"
+          {
+            "public_key": "@$HOME/.ssh/id_barista.pub",
+            "valid_principals": "barista",
+            "extensions": {
+              "permit-pty": "",
+              "permit-port-forwarding": ""
+            }
+          }
+          EOH
+
           vault write -field=signed_key ssh-client-signer/sign/ansible-role \
             public_key=@$HOME/.ssh/id_barista.pub \
-            valid_principals=barista \
-            extensions=permit-pty,permit-port-forwarding \
             > ~/.ssh/id_barista-cert.pub
 
           ##
