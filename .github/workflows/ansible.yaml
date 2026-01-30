@@ -80,11 +80,13 @@ jobs:
           ##
           # Generate ephemeral SSH keypair
           ##
+          echo "[SSH] Generating RSA"
           ssh-keygen -t rsa -f ~/.ssh/id_barista -C "barista@citocafecito.work" -N ""
 
           ##
           # Request signed SSH certificate from Vault
           ##
+          echo "[VAULT] Write Signer"
           vault write ssh-client-signer/sign/ansible-role <<"EOH"
           {
             "public_key": "@$HOME/.ssh/id_barista.pub",
@@ -95,7 +97,8 @@ jobs:
             }
           }
           EOH
-
+          
+          echo "[VAULT] Finishing Sign In"
           vault write -field=signed_key ssh-client-signer/sign/ansible-role \
             public_key=@$HOME/.ssh/id_barista.pub \
             > ~/.ssh/id_barista-cert.pub
