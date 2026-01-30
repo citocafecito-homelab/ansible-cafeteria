@@ -25,7 +25,13 @@ jobs:
           cache: "pip"
           python-version-file: ".python-version"
 
-      - name: "Install Ansible"
+      - name: Setup Vault CLI
+        uses: eLco/setup-vault@v1
+
+      - name: SSH Client
+        uses: ipsni/actions-ssh-client@v0.0.1
+
+      - name: Install Deps
         run: |
           pip3 install -r requirements.txt
           ansible-galaxy collection install -r requirements.yml
