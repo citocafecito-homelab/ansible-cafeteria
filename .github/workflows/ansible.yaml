@@ -24,11 +24,6 @@ jobs:
         with:
           cache: "pip"
           python-version-file: ".python-version"
-      
-      - name: Setup SSH agent
-        uses: tanmancan/action-setup-ssh-agent-key@1.0.0
-        # with:
-        #   ssh-private-key: ${{ secrets.SSH_KEY }}
 
       - name: Setup Vault CLI
         uses: eLco/setup-vault@v1
@@ -37,6 +32,15 @@ jobs:
         run: |
           pip3 install -r requirements.txt
           ansible-galaxy collection install -r requirements.yml
+      
+      - name: Preparar entorno SSH
+        run: |
+          sudo apt-get update && sudo apt-get install -y openssh-client
+
+      # - name: Setup SSH agent
+      #   uses: tanmancan/action-setup-ssh-agent-key@1.0.0
+      #   # with:
+      #   #   ssh-private-key: ${{ secrets.SSH_KEY }}
 
       - name: Setup SSH with Vault
         env:
