@@ -72,18 +72,25 @@ jobs:
 
           ssh-keygen -t ed25519 -f ~/.ssh/id_barista -N "" -q
 
-          vault write -field=signed_key ssh-client-signer/sign/ansible-role - > ~/.ssh/id_barista-cert.pub <<EOH
+          vault write ssh-client-signer/sign/ansible-role <<"EOH"
           {
-            "public_key": "$(cat ~/.ssh/id_barista.pub)",
-            "valid_principals": "barista"
+            "public_key": "@$HOME/.ssh/id_barista.pub",
+            "valid_principals": "barista",
+            "extensions": {
+              "permit-pty": "",
+              "permit-port-forwarding": ""
+            }
           }
           EOH
+
+          vault write -field=signed_key ssh-client-signer/sign/ansible-role public_key=@$HOME/.ssh/id_barista.pub > signed-cert.pub
 
           chmod 600 ~/.ssh/config
           chmod 600 ~/.ssh/id_barista ~/.ssh/id_barista-cert.pub
 
           ls -l ~/.ssh/id_barista-cert.pub
           ssh-keygen -Lf ~/.ssh/id_barista-cert.pub
+
       - name: Run Ansible playbook
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
