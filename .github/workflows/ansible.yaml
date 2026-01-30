@@ -39,63 +39,68 @@ jobs:
       - name: Setup Vault CLI
         uses: eLco/setup-vault@v1
       
-      - name: Auth with Vault (OIDC)
+      - name: Authenticate with Vault (OIDC)
         uses: hashicorp/vault-action@v3
         with:
           url: "http://vault.core.svc.cluster.local:8200"
           method: jwt
           role: "github-ansible-role"
-          jwtGithubAudience: "https://github.com/citocafecito-homelab" 
+          jwtGithubAudience: "https://github.com/citocafecito-homelab"
           exportToken: true
       
-      - name: Ensure SSH Client
+      - name: Ensure SSH client is installed
         run: |
-          # Asegura que ssh-keygen y el binario ssh existan
-          if ! command -v ssh &> /dev/null; then
-            sudo apt-get update && sudo apt-get install -y openssh-client
+          if ! command -v ssh >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y openssh-client
           fi
 
-      - name: Setup SSH and Sign Key
+      - name: Setup SSH and sign key via Vault
         env:
           VAULT_ADDR: "http://vault.core.svc.cluster.local:8200"
         run: |
+          ##
+          # SSH working directory
+          ##
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
 
+          ##
+          # SSH client configuration
+          #
+          # TrustedUserCAKeys must match the CA installed on target hosts
+          ##
           cat <<EOF > ~/.ssh/config
           Host *
             StrictHostKeyChecking no
-            User barista
-            IdentityFile ~/.ssh/id_barista
-            CertificateFile ~/.ssh/id_barista-cert.pub
           EOF
 
-          ssh-keygen -t ed25519 -f ~/.ssh/id_barista -N "" -q
-
-          vault write ssh-client-signer/sign/ansible-role <<"EOH"
-          {
-            "public_key": "@$HOME/.ssh/id_barista.pub",
-            "valid_principals": "barista",
-            "extensions": {
-              "permit-pty": "",
-              "permit-port-forwarding": ""
-            }
-          }
-          EOH
-
-          vault write -field=signed_key ssh-client-signer/sign/ansible-role public_key=@$HOME/.ssh/id_barista.pub > signed-cert.pub
-
           chmod 600 ~/.ssh/config
-          chmod 600 ~/.ssh/id_barista ~/.ssh/id_barista-cert.pub
 
-          ls -l ~/.ssh/id_barista-cert.pub
+          ##
+          # Generate ephemeral SSH keypair
+          ##
+          ssh-keygen -t rsa -f ~/.ssh/id_barista -C "barista@citocafecito.work" -N ""
+
+          ##
+          # Request signed SSH certificate from Vault
+          ##
+          vault write -field=signed_key ssh-client-signer/sign/ansible-role \
+            public_key=@$HOME/.ssh/id_barista.pub \
+            valid_principals=barista \
+            extensions=permit-pty,permit-port-forwarding \
+            > ~/.ssh/id_barista-cert.pub
+
+          ##
+          # Validate certificate contents
+          ##
           ssh-keygen -Lf ~/.ssh/id_barista-cert.pub
 
       - name: Run Ansible playbook
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
-        run: | 
+        run: |
           ansible-playbook playbook.yml \
             --user barista \
             -e "ansible_ssh_private_key_file=~/.ssh/id_barista" \
-            --ssh-common-args="-F /home/runner/.ssh/config"
+            --ssh-common-args="-F $HOME/.ssh/config"
