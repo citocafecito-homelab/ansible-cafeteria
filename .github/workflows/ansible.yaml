@@ -52,6 +52,7 @@ jobs:
           url: "http://vault.core.svc.cluster.local:8200"
           method: jwt
           role: "github-ansible-role"
+          jwtGithubAudience: "https://github.com/citocafecito-homelab" 
           exportToken: true
 
       - name: Setup SSH and Sign Key
