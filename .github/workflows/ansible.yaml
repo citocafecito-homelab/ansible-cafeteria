@@ -24,12 +24,14 @@ jobs:
         with:
           cache: "pip"
           python-version-file: ".python-version"
+      
+      - name: Setup SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
 
       - name: Setup Vault CLI
         uses: eLco/setup-vault@v1
-
-      - name: SSH Client
-        uses: ipsni/actions-ssh-client@v0.0.1
 
       - name: Install Deps
         run: |
