@@ -31,13 +31,13 @@ jobs:
           path: ~/.ansible/collections
           key: ${{ runner.os }}-ansible-${{ hashFiles('requirements.yml') }}
 
-      # - name: Setup Vault CLI
-      #   uses: eLco/setup-vault@v1
-
       - name: Install Deps
         run: |
           pip3 install -r requirements.txt
           ansible-galaxy collection install -r requirements.yml
+
+      - name: Setup Vault CLI
+        uses: eLco/setup-vault@v1
       
       - name: Auth with Vault (OIDC)
         uses: hashicorp/vault-action@v3
