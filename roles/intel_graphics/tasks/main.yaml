@@ -4,7 +4,7 @@
   ansible.builtin.package:
     name:
       - intel-media-va-driver
-      - firmware-intel-graphics
+      - firmware-intel_graphics
       - firmware-linux-nonfree
       - vainfo
       - libva2
@@ -13,21 +13,21 @@
       - intel-gpu-tools
 
 - name: Verify /dev/dri exists
-  stat:
+  ansible.builtin.stat:
     path: /dev/dri/renderD128
   register: dri_device
 
 - name: Fail if VA-API device is missing
-  fail:
+  ansible.builtin.fail:
     msg: "/dev/dri/renderD128 not found. GPU or driver not available."
   when: not dri_device.stat.exists
 
 - name: Run vainfo to validate VA-API
-  command: vainfo
+  ansible.builtin.command: vainfo
   register: vainfo_output
   changed_when: false
   failed_when: vainfo_output.rc != 0
 
 - name: Show vainfo output
-  debug:
+  ansible.builtin.debug:
     var: vainfo_output.stdout

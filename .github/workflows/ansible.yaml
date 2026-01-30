@@ -12,6 +12,9 @@ on:
 jobs:
   playbook:
     runs-on: self-hosted
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Checkout Code
         uses: actions/checkout@v5
@@ -27,14 +30,33 @@ jobs:
           pip3 install -r requirements.txt
           ansible-galaxy collection install -r requirements.yml
 
-      - name: Configure SSH key
+      - name: Setup SSH with Vault
+        env:
+          VAULT_ADDR: "http://vault.core.svc.cluster.local:8200"
         run: |
+          # 1. Crear directorio y configurar SSH para no validar hosts
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/barista@catuai
-          chmod 600 ~/.ssh/barista@catuai
           printf "Host *\n  StrictHostKeyChecking no\n" > ~/.ssh/config
+
+          # 2. Login en Vault usando el OIDC de GitHub
+          export VAULT_TOKEN=$(vault write -field=token auth/jwt/login \
+            role="github-ansible-role" \
+            jwt="${{ secrets.GITHUB_TOKEN }}")
+
+          # 3. Generar llave efímera con el nombre que usabas antes
+          # (Sin passphrase, tipo ed25519)
+          ssh-keygen -t ed25519 -f ~/.ssh/barista@catuai -N ""
+
+          # 4. Firmar la llave pública para el usuario 'barista'
+          # El certificado DEBE llamarse igual que la llave + "-cert.pub"
+          vault write -field=signed_key ssh-client-signer/sign/ansible-role \
+            public_key=@$HOME/.ssh/barista@catuai.pub \
+            valid_principals="barista" > ~/.ssh/barista@catuai-cert.pub
+
+          # 5. Ajustar permisos
+          chmod 600 ~/.ssh/barista@catuai ~/.ssh/barista@catuai-cert.pub
 
       - name: Run Ansible playbook
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
-        run: ansible-playbook playbook.yml
+        run: ansible-playbook playbook.yml --user barista --private-key ~/.ssh/id_barista

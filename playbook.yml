@@ -11,7 +11,7 @@
     - { role: bluetooth, when: bluetooth_enabled | default(false) | bool }
 
     # Intel Graphics (VA-API / Quick Sync)
-    - { role: intel-graphics, when: graphics == "intel" }
+    - { role: intel_graphics, when: graphics == "intel" }
 
     # Bond Multi Ethernet
     - { role: bond, when: bond_enabled | default(false) | bool }
@@ -43,7 +43,7 @@
       changed_when: false
 
     - name: Set join command as fact
-      set_fact:
+      ansible.builtin.set_fact:
         kubeadm_join_command: "{{ kubeadm_join_cmd.stdout }}"
 
 - name: K8s Workers

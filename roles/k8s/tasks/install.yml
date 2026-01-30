@@ -50,18 +50,17 @@
     creates: /opt/cni/bin/bridge
 
 - name: Ensure /usr/lib/cni directory exists
-  file:
+  ansible.builtin.file:
     path: /usr/lib/cni
     state: directory
     mode: '0755'
 
 - name: Symlink CNI binaries from /opt/cni/bin to /usr/lib/cni
-  file:
+  ansible.builtin.file:
     src: "/opt/cni/bin/{{ item }}"
     dest: "/usr/lib/cni/{{ item }}"
     state: link
   loop: "{{ lookup('fileglob', '/opt/cni/bin/*', wantlist=True) }}"
-  ignore_errors: yes
 
 - name: Install Kubernetes Python client
   become: true

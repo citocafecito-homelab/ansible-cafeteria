@@ -67,9 +67,10 @@
         cmd: kubeadm token create --print-join-command
       register: kubeadm_join
       run_once: true
+      changed_when: false
 
     - name: Store join command globally
-      set_fact:
+      ansible.builtin.set_fact:
         k8s_join_command: "{{ kubeadm_join.stdout }}"
       delegate_to: localhost
       run_once: true
