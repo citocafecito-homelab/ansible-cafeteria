@@ -61,20 +61,25 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
-          printf "Host *\n  StrictHostKeyChecking no\n" > ~/.ssh/config
 
-          # 1. Generar llave efímera (id_barista)
+          cat <<EOF > ~/.ssh/config
+          Host *
+            StrictHostKeyChecking no
+            User barista
+            IdentityFile ~/.ssh/id_barista
+            CertificateFile ~/.ssh/id_barista-cert.pub
+          EOF
+
           ssh-keygen -t ed25519 -f ~/.ssh/id_barista -N "" -q
 
-          # 2. Firmar la llave pública con Vault
           vault write -field=signed_key ssh-client-signer/sign/ansible-role \
             public_key=@$HOME/.ssh/id_barista.pub \
             valid_principals="barista" > ~/.ssh/id_barista-cert.pub
 
-          # 3. Permisos estrictos (requerido por SSH)
+          chmod 600 ~/.ssh/config
           chmod 600 ~/.ssh/id_barista ~/.ssh/id_barista-cert.pub
 
       - name: Run Ansible playbook
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
-        run: ansible-playbook playbook.yml --user barista --private-key ~/.ssh/id_barista
+        run: ansible-playbook playbook.yml --user barista -e "ansible_ssh_private_key_file=~/.ssh/id_barista"
