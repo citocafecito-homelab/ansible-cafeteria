@@ -74,7 +74,8 @@ jobs:
 
           if ! vault write -field=signed_key ssh-client-signer/sign/ansible-role \
               public_key=@$HOME/.ssh/id_barista.pub \
-              valid_principals="barista" > ~/.ssh/id_barista-cert.pub; then
+              valid_principals="barista" \
+              extensions='{"permit-pty":""}' > ~/.ssh/id_barista-cert.pub; then
             echo "ERROR: Vault no pudo firmar la llave"
             exit 1
           fi
@@ -89,4 +90,8 @@ jobs:
       - name: Run Ansible playbook
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
-        run: ansible-playbook playbook.yml --user barista -e "ansible_ssh_private_key_file=~/.ssh/id_barista"
+        run: | 
+          ansible-playbook playbook.yml \
+            --user barista \
+            -e "ansible_ssh_private_key_file=~/.ssh/id_barista" \
+            --ssh-common-args="-F /home/runner/.ssh/config"
