@@ -79,13 +79,11 @@ jobs:
           }
           EOH
 
-          # Verificar que el archivo existe y tiene contenido
-          ls -l ~/.ssh/id_barista-cert.pub
-          ssh-keygen -Lf ~/.ssh/id_barista-cert.pub
-
           chmod 600 ~/.ssh/config
           chmod 600 ~/.ssh/id_barista ~/.ssh/id_barista-cert.pub
 
+          ls -l ~/.ssh/id_barista-cert.pub
+          ssh-keygen -Lf ~/.ssh/id_barista-cert.pub
       - name: Run Ansible playbook
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
