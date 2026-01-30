@@ -39,9 +39,12 @@ jobs:
           pip3 install -r requirements.txt
           ansible-galaxy collection install -r requirements.yml
       
-      - name: Setup SSH Agent
+      - name: Ensure SSH Client
         run: |
-          sudo apt-get update && sudo apt-get install -y openssh-client
+          # Asegura que ssh-keygen y el binario ssh existan
+          if ! command -v ssh &> /dev/null; then
+            sudo apt-get update && sudo apt-get install -y openssh-client
+          fi
       
       - name: Auth with Vault (OIDC)
         uses: hashicorp/vault-action@v3
@@ -51,22 +54,23 @@ jobs:
           role: "github-ansible-role"
           exportToken: true
 
-      - name: Setup SSH with Vault
-        id: vault-auth
+      - name: Setup SSH and Sign Key
         env:
           VAULT_ADDR: "http://vault.core.svc.cluster.local:8200"
         run: |
           mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
           printf "Host *\n  StrictHostKeyChecking no\n" > ~/.ssh/config
 
-          # Generar llave efímera
-          ssh-keygen -t ed25519 -f ~/.ssh/id_barista -N ""
+          # 1. Generar llave efímera (id_barista)
+          ssh-keygen -t ed25519 -f ~/.ssh/id_barista -N "" -q
 
-          # Firmar la llave usando el token obtenido en el paso anterior
+          # 2. Firmar la llave pública con Vault
           vault write -field=signed_key ssh-client-signer/sign/ansible-role \
             public_key=@$HOME/.ssh/id_barista.pub \
             valid_principals="barista" > ~/.ssh/id_barista-cert.pub
 
+          # 3. Permisos estrictos (requerido por SSH)
           chmod 600 ~/.ssh/id_barista ~/.ssh/id_barista-cert.pub
 
       - name: Run Ansible playbook
