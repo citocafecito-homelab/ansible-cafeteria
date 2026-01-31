@@ -1,0 +1,44 @@
+name: Update Server via Ansible
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "**/**.md"
+      - ".ansible-lint"
+      - "!playbooks/vault_config.yml"
+
+jobs:
+  playbook:
+    runs-on: self-hosted
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          cache: "pip"
+          python-version-file: ".python-version"
+
+      - name: Cache Ansible Collections
+        uses: actions/cache@v4
+        with:
+          path: ~/.ansible/collections
+          key: ${{ runner.os }}-ansible-${{ hashFiles('requirements.yml') }}
+
+      - name: Install Deps
+        run: |
+          pip3 install -r requirements.txt
+          ansible-galaxy collection install -r requirements.yml
+
+      - name: Run Ansible playbook
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "False"
+        run: |
+          ansible-playbook playbooks/vault_config.yml

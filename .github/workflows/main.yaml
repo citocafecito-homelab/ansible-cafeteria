@@ -8,6 +8,7 @@ on:
     paths-ignore:
       - "**/**.md"
       - ".ansible-lint"
+      - "!playbooks/main.yml"
 
 jobs:
   playbook:
@@ -106,6 +107,6 @@ jobs:
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
         run: |
-          ansible-playbook playbook.yml \
+          ansible-playbook playbooks/main.yml \
             --user barista \
             --ssh-common-args="-F $HOME/.ssh/config"
