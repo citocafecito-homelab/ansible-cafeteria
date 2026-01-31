@@ -39,7 +39,7 @@ jobs:
 
       - name: Setup Vault CLI
         uses: eLco/setup-vault@v1
-      
+
       - name: Authenticate with Vault (OIDC)
         uses: hashicorp/vault-action@v3
         with:
@@ -48,7 +48,7 @@ jobs:
           role: "github-ansible-role"
           jwtGithubAudience: "https://github.com/citocafecito-homelab"
           exportToken: true
-      
+
       - name: Ensure SSH client is installed
         run: |
           if ! command -v ssh >/dev/null; then
