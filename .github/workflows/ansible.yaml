@@ -73,6 +73,8 @@ jobs:
           cat <<EOF > ~/.ssh/config
           Host *
             StrictHostKeyChecking no
+            IdentityFile ~/.ssh/id_barista
+            CertificateFile ~/.ssh/id_barista-cert.pub
           EOF
 
           chmod 600 ~/.ssh/config
@@ -106,5 +108,4 @@ jobs:
         run: |
           ansible-playbook playbook.yml \
             --user barista \
-            -e "ansible_ssh_private_key_file=~/.ssh/id_barista" \
             --ssh-common-args="-F $HOME/.ssh/config"
