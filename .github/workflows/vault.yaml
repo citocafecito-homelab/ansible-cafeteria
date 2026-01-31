@@ -11,7 +11,7 @@ on:
       - "!playbooks/vault_config.yml"
 
 jobs:
-  playbook:
+  vault:
     runs-on: self-hosted
     permissions:
       id-token: write

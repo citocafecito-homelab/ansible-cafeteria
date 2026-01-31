@@ -11,7 +11,7 @@ on:
       - "!playbooks/main.yml"
 
 jobs:
-  playbook:
+  main:
     runs-on: self-hosted
     permissions:
       id-token: write
