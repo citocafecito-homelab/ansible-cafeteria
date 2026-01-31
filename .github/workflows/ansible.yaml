@@ -88,12 +88,12 @@ jobs:
           ##
           echo "[VAULT] Write Signer"
           vault write -field=signed_key ssh-client-signer/sign/my-role \
-            public_key=@$HOME/.ssh/id_rsa.pub \
+            public_key=@$HOME/.ssh/id_barista.pub \
             valid_principals=barista \
             extensions.permit-pty="" \
             extensions.permit-port-forwarding="" \
             ttl=30m \
-            > ~/.ssh/id_rsa-cert.pub
+            > ~/.ssh/id_barista-cert.pub
 
           ##
           # Validate certificate contents
