@@ -2,9 +2,26 @@
   hosts: cafeteria
   gather_facts: true
   pre_tasks:
-    - name: Pre Tasks
-      ansible.builtin.include_tasks:
-        file: ../tasks/prepare.yml
+    - name: Initialize playbook
+      ansible.builtin.debug:
+        msg: "Starting Home Lab Setup in {{ inventory_hostname }}"
+
+    - name: Get OS Information
+      ansible.builtin.command:
+        cmd: lsb_release -a
+      register: os_info
+      changed_when: false
+
+    - name: Print OS Information
+      ansible.builtin.debug:
+        var: os_info.stdout_lines
+
+    - name: Install Core Deps
+      become: true
+      ansible.builtin.package:
+        name:
+          - build-essential
+        update_cache: true
 
   roles:
     # Bluetooth
@@ -12,6 +29,9 @@
 
     # Intel Graphics (VA-API / Quick Sync)
     - { role: intel_graphics, when: graphics == "intel" }
+
+    # NFS (Network File System)
+    - { role: nfs, when: nfs_enabled | default(false) | bool }
 
     # Bond Multi Ethernet
     - { role: bond, when: bond_enabled | default(false) | bool }
