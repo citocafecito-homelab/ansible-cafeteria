@@ -9,7 +9,7 @@ on:
     paths-ignore:
       - "**/**.md"
       - ".ansible-lint"
-      - "!playbooks/vault_config.yml"
+      - "!playbooks/vault.yml"
 
 jobs:
   vault:
@@ -35,11 +35,18 @@ jobs:
 
       - name: Install Deps
         run: |
-          pip3 install -r requirements.txt
-          pip3 install -r requirements/vault.txt
+          pip3 install -r requirements.txt \
+            --prefer-binary \
+            --no-build-isolation \
+            --disable-pip-version-check
+
+          pip3 install -r requirements/vault.txt \
+            --prefer-binary \
+            --no-build-isolation \
+            --disable-pip-version-check
 
       - name: Run Ansible playbook
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
         run: |
-          ansible-playbook playbooks/vault_config.yml
+          ansible-playbook playbooks/vault.yml
