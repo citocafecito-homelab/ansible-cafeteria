@@ -1,10 +1,12 @@
 - name: Install NFS packages
+  become: true
   ansible.builtin.package:
     name:
       - nfs-kernel-server
     state: present
 
 - name: Ensure export directories exist
+  become: true
   ansible.builtin.file:
     path: "{{ item.path }}"
     state: directory
@@ -14,6 +16,7 @@
   loop: "{{ nfs_exports }}"
 
 - name: Configure /etc/exports
+  become: true
   ansible.builtin.template:
     src: exports.j2
     dest: /etc/exports
@@ -23,6 +26,7 @@
   notify: Reload NFS exports
 
 - name: Ensure NFS service is enabled and running
+  become: true
   ansible.builtin.service:
     name: "{{ 'nfs-kernel-server' if ansible_os_family == 'Debian' else 'nfs-utils' }}"
     state: started
