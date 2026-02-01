@@ -9,7 +9,12 @@ graphics: intel
 
 # NFS
 nfs_enabled: true
+nfs_server_enabled: true
+nfs_client_enabled: false
+
 nfs_exports:
   - path: /mnt/multimedia
     clients: "192.168.1.0/24"
     options: "rw,async,no_subtree_check,no_root_squash"
+
+nfs_mounts: []

@@ -1,1 +1,5 @@
+nfs_server_enabled: false
+nfs_client_enabled: false
+
 nfs_exports: []
+nfs_mounts: []

@@ -1,0 +1,22 @@
+- name: Install NFS client packages
+  ansible.builtin.package:
+    name:
+      - nfs-common
+      - nfs-utils
+    state: present
+
+- name: Ensure mount points exist
+  ansible.builtin.file:
+    path: "{{ item.mount_path }}"
+    state: directory
+    mode: "0755"
+  loop: "{{ nfs_mounts }}"
+
+- name: Mount NFS shares
+  ansible.posix.mount:
+    src: "{{ item.server }}:{{ item.remote_path }}"
+    path: "{{ item.mount_path }}"
+    fstype: nfs
+    opts: "{{ item.options }}"
+    state: mounted
+  loop: "{{ nfs_mounts }}"
