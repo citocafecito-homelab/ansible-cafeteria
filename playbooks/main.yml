@@ -4,7 +4,7 @@
   pre_tasks:
     - name: Pre Tasks
       ansible.builtin.include_tasks:
-        file: tasks/prepare.yml
+        file: ../tasks/prepare.yml
 
   roles:
     # Bluetooth
