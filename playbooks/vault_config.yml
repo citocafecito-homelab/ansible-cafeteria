@@ -2,12 +2,12 @@
   hosts: localhost
   connection: local
   vars:
-    # URL de acceso (ej: después de un kubectl port-forward)
     vault_addr: "http://127.0.0.1:8200"
     vault_root_token: "{{ lookup('env', 'VAULT_TOKEN') }}"
 
-  - name: Verificar que Vault es accesible
-    uri:
-      url: "{{ vault_addr }}/v1/sys/health"
-      method: GET
-    register: vault_health
+  tasks:
+    - name: Verificar que Vault es accesible
+      ansible.builtin.uri:
+        url: "{{ vault_addr }}/v1/sys/health"
+        method: GET
+      register: vault_health
