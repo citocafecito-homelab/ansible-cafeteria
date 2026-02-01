@@ -35,10 +35,17 @@ jobs:
 
       - name: Install Deps
         run: |
-          pip3 install -r requirements.txt
-          pip3 install -r requirements/main.txt
-          ansible-galaxy collection install -r requirements.yml
+          pip3 install -r requirements.txt \
+            --prefer-binary \
+            --no-build-isolation \
+            --disable-pip-version-check
 
+          pip3 install -r requirements/main.txt \
+            --prefer-binary \
+            --no-build-isolation \
+            --disable-pip-version-check
+
+          ansible-galaxy collection install -r requirements.yml
       - name: Setup Vault CLI
         uses: eLco/setup-vault@v1
 
