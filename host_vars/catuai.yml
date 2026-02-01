@@ -18,3 +18,19 @@ k8s_pod_cidr: 10.244.0.0/16
 
 # Graphics
 graphics: intel
+
+# NFS
+nfs_enabled: true
+nfs_server_enabled: true
+nfs_client_enabled: true
+
+nfs_exports:
+  - path: /mnt/multimedia2
+    clients: "192.168.1.0/24"
+    options: "rw,async,no_subtree_check,no_root_squash"
+
+nfs_mounts:
+  - server: 192.168.1.11
+    remote_path: /mnt/multimedia
+    mount_path: /mnt/multimedia
+    options: "rw,hard,intr,noatime"
