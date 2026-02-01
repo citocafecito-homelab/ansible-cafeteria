@@ -2,7 +2,6 @@
   ansible.builtin.package:
     name:
       - nfs-kernel-server
-      - nfs-utils
     state: present
 
 - name: Ensure export directories exist
