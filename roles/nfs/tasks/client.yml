@@ -13,7 +13,7 @@
   loop: "{{ nfs_mounts }}"
 
 - name: Mount NFS shares
-  when: false
+  # when: false
   become: true
   ansible.posix.mount:
     src: "{{ item.server }}:{{ item.remote_path }}"
