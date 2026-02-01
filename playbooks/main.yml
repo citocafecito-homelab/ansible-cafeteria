@@ -52,6 +52,7 @@
   tasks:
     - name: Join worker to cluster
       become: true
+      when: false
       ansible.builtin.command:
         cmd: "{{ hostvars[groups['k8s_control_plane'][0]].kubeadm_join_command }}"
         creates: /var/lib/kubelet/config.yaml
