@@ -1,0 +1,17 @@
+- name: Home Lab Setup
+  hosts: cafeteria
+  gather_facts: true
+  pre_tasks:
+    - name: Initialize playbook
+      ansible.builtin.debug:
+        msg: "[TEST] Starting Home Lab Setup in {{ inventory_hostname }}"
+
+    - name: Print OS Information
+      ansible.builtin.debug:
+        msg:
+          - "Distro: {{ ansible_distribution }}"
+          - "Version: {{ ansible_distribution_version }}"
+          - "Codename: {{ ansible_distribution_release }}"
+  roles:
+    # NFS (Network File System)
+    - { role: nfs, when: nfs_enabled | default(false) | bool }

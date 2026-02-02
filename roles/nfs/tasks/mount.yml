@@ -1,0 +1,22 @@
+- name: Ensure mount points exist on {{ item }}
+  become: true
+  ansible.builtin.file:
+    path: "{{ mount.path }}"
+    state: directory
+    mode: "0755"
+  loop: "{{ nfs_mounts }}"
+  loop_control:
+    loop_var: mount
+
+- name: Mount NFS Directories on {{ item }}
+  become: true
+  delegate_to: "{{ item }}"
+  ansible.posix.mount:
+    src: "{{ nfs_server }}:{{ mount.path }}"
+    path: "{{ mount.path }}"
+    fstype: nfs
+    opts: "rw,_netdev,nofail,x-systemd.automount"
+    state: mounted
+  loop: "{{ nfs_mounts }}"
+  loop_control:
+    loop_var: mount

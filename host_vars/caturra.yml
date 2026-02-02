@@ -17,8 +17,4 @@ nfs_exports:
     clients: "192.168.1.0/24"
     options: "rw,async,no_subtree_check,no_root_squash"
 
-nfs_mounts:
-  - server: 192.168.1.10
-    remote_path: /mnt/multimedia2
-    mount_path: /mnt/multimedia2
-    options: "rw,hard,intr,noatime"
+nfs_mounts: []

@@ -23,7 +23,6 @@
     owner: root
     group: root
     mode: "0644"
-  notify: Reload NFS exports
 
 - name: Ensure NFS service is enabled and running
   become: true
@@ -31,3 +30,9 @@
     name: "{{ 'nfs-kernel-server' if ansible_os_family == 'Debian' else 'nfs-utils' }}"
     state: started
     enabled: true
+
+- name: Reload NFS
+  become: true
+  ansible.builtin.command:
+    cmd: exportfs -ra
+  changed_when: false

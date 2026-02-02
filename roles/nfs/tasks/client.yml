@@ -16,7 +16,7 @@
   # when: false
   become: true
   ansible.posix.mount:
-    src: "{{ item.server }}:{{ item.remote_path }}"
+    src: "{{ nfs_server }}:{{ item.remote_path }}"
     path: "{{ item.mount_path }}"
     fstype: nfs
     opts: "{{ item.options }}"
