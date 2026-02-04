@@ -7,12 +7,13 @@ on:
     branches:
       - main
     paths:
+      - ".github/workflows/vault.yaml"
       - "roles/vault"
       - "playbooks/vault.yml"
 
 jobs:
   vault:
-    runs-on: self-hosted
+    runs-on: [self-hosted, arc, k8s]
     permissions:
       id-token: write
       contents: read
