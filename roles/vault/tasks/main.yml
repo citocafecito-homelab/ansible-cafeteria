@@ -1,7 +1,11 @@
-- name: Setup vault
-  ansible.builtin.include_tasks:
-    file: install.yml
+- name: Server Install
+  ansible.builtin.import_tasks: server.yml
+  when: vault_server_enabled
 
-- name: Configure Vault Server
-  ansible.builtin.include_tasks:
-    file: setup.yml
+- name: Server Configuration Setup
+  ansible.builtin.import_tasks: setup.yml
+  when: vault_setup
+
+- name: Client Setup
+  ansible.builtin.import_tasks: client.yml
+  when: vault_client_enabled

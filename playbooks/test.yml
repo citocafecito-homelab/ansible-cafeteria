@@ -12,6 +12,4 @@
           - "Distro: {{ ansible_distribution }}"
           - "Version: {{ ansible_distribution_version }}"
           - "Codename: {{ ansible_distribution_release }}"
-  roles:
-    # NFS (Network File System)
-    - { role: nfs, when: nfs_enabled | default(false) | bool }
+  roles: []

@@ -55,7 +55,7 @@
     # Apps Cluster
     - { role: k8s }
 
-- name: K8s Control Plane
+- name: K8s Cluster Setup
   hosts: k8s_control_plane
   gather_facts: true
   tasks:
@@ -69,13 +69,12 @@
       ansible.builtin.set_fact:
         kubeadm_join_command: "{{ kubeadm_join_cmd.stdout }}"
 
-- name: K8s Workers
-  hosts: k8s_workers
-  gather_facts: true
-  tasks:
     - name: Join worker to cluster
       become: true
-      when: false
+      delegate_to: "{{ worker }}"
       ansible.builtin.command:
-        cmd: "{{ hostvars[groups['k8s_control_plane'][0]].kubeadm_join_command }}"
+        cmd: "{{ kubeadm_join_command }}"
         creates: /var/lib/kubelet/config.yaml
+      loop: "{{ groups['k8s_workers'] }}"
+      loop_control:
+        loop_var: worker

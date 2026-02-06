@@ -1,0 +1,23 @@
+- name: Workstation Setup
+  hosts: workstation
+  gather_facts: true
+  tasks:
+    - name: Install Deps
+      become: true
+      ansible.builtin.package:
+        name:
+          - kubectl
+          - git
+          - nodejs
+        state: present
+  roles:
+    # System
+    - { role: bluetooth, when: bluetooth_enabled | default(false) | bool }
+    - { role: nfs, when: nfs_enabled | default(false) | bool }
+
+    # Secret manager
+    - { role: vault, when: vault_enabled | default(false) | bool }
+
+    # Development Tools
+    - { role: gh, when: gh_enabled | default(false) | bool }
+    - { role: nodejs, when: nodejs_enabled | default(false) | bool }

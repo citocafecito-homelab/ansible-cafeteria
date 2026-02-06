@@ -1,0 +1,13 @@
+# Bluetooth
+bluetooth_enabled: true
+
+# Kubernetes
+k8s_enabled: true
+
+# NFS
+nfs_enabled: true
+nfs_client_enabled: true
+
+# Vault
+vault_enabled: true
+vault_client_enabled: true
