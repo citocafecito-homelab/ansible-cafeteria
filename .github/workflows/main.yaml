@@ -30,7 +30,8 @@ jobs:
         run: |
           uv venv
           uv pip install --group kubernetes
-        env: UV_
+        env:
+          UV_LINK_MODE: copy
 
       - name: Install Ansible Galaxy Tools
         run: uv run ansible-galaxy collection install -r requirements.yml
