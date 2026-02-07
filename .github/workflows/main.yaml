@@ -83,7 +83,7 @@ jobs:
           # Generate ephemeral SSH keypair
           ##
           echo "[SSH] Generating RSA"
-          ssh-keygen -t rsa -f ~/.ssh/id_barista -C "barista@citocafecito.work" -N ""
+          ssh-keygen -t rsa -f ~/.ssh/id_barista -C "barista@citocafecito.work" -N "" -q
 
           ##
           # Request signed SSH certificate from Vault
@@ -96,12 +96,6 @@ jobs:
             extensions.permit-port-forwarding="" \
             ttl=30m \
             > ~/.ssh/id_barista-cert.pub
-
-          ##
-          # Validate certificate contents
-          ##
-          ssh-keygen -Lf ~/.ssh/id_barista-cert.pub
-
       - name: Run Ansible playbook
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
