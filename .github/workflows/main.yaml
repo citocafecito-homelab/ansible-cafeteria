@@ -27,7 +27,7 @@ jobs:
           enable-cache: "true"
 
       - name: Install Deps
-        run: uv pip install --group kubernetes
+        run: uv pip install --group kubernetes --system
 
       - name: Install Ansible Galaxy Tools
         run: ansible-galaxy collection install -r requirements.yml
