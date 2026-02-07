@@ -4,22 +4,32 @@ version = "0.1.0"
 description = "Ansible automation for homelab infrastructure"
 requires-python = ">=3.11"
 
-dependencies = [
+[tool.uv]
+default-groups = ["base", "dev"]
+
+[dependency-groups]
+base = [
   "ansible==12.2.0",
 ]
 
-[dependency-groups]
+dev = [
+  {include-group = "base"},
+]
+
 kubernetes = [
+  {include-group = "base"},
   "kubernetes==33.1.0",
   "openshift==0.13.2",
 ]
 
 vault = [
+  {include-group = "base"},
   # Placeholder: Vault-related Python dependencies
   # e.g. "hvac==X.Y.Z"
 ]
 
 workstation = [
+  {include-group = "base"},
   # Placeholder: Vault-related Python dependencies
   # e.g. "hvac==X.Y.Z"
 ]
