@@ -5,18 +5,15 @@
   args:
     creates: /etc/containerd/config.toml
 
-- name: Update Containerd Config
+- name: Enable SystemdCgroup for runc
   become: true
-  ansible.builtin.lineinfile:
+  ansible.builtin.replace:
     path: /etc/containerd/config.toml
-    regexp: "{{ item.regexp }}"
-    line: "{{ item.line }}"
-    owner: root
-    group: root
-    mode: '0644'
+    regexp: "{{ regexp }}"
+    replace: "{{ replace }}"
   loop:
-    - { regexp: '^SystemdCgroup = false', line: 'SystemdCgroup = true' }
-    - { regexp: 'sandbox_image = "registry.k8s.io/pause:3.8"', line: 'sandbox_image = "registry.k8s.io/pause:3.10"' }
+    - { regexp: '^SystemdCgroup = false', replace: 'SystemdCgroup = true' }
+    - { regexp: 'sandbox_image = "registry.k8s.io/pause:3.8"', replace: 'sandbox_image = "registry.k8s.io/pause:3.10"' }
 
 - name: Enable and start required services
   become: true

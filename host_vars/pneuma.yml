@@ -5,8 +5,8 @@ bluetooth_enabled: true
 k8s_enabled: true
 
 # NFS
-nfs_enabled: true
-nfs_client_enabled: true
+# nfs_enabled: true
+# nfs_client_enabled: true
 
 # Vault
 vault_enabled: true

@@ -21,31 +21,18 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v5
 
-      - name: Setup Python
-        uses: actions/setup-python@v6
+      - name: Install UV
+        uses: astral-sh/setup-uv@v7.3.0
         with:
-          cache: "pip"
-          python-version-file: ".python-version"
-
-      - name: Cache Ansible Collections
-        uses: actions/cache@v4
-        with:
-          path: ~/.ansible/collections
-          key: ${{ runner.os }}-ansible-${{ hashFiles('requirements.yml') }}
+          enable-cache: "true"
+          version-file: ".python-version"
 
       - name: Install Deps
-        run: |
-          pip3 install -r requirements.txt \
-            --prefer-binary \
-            --no-build-isolation \
-            --disable-pip-version-check
+        run: uv pip install -r requirements.txt -r requirements/main.txt
 
-          pip3 install -r requirements/main.txt \
-            --prefer-binary \
-            --no-build-isolation \
-            --disable-pip-version-check
+      - name: Install Ansible Galaxy Tools
+        run: ansible-galaxy collection install -r requirements.yml
 
-          ansible-galaxy collection install -r requirements.yml
       - name: Setup Vault CLI
         uses: eLco/setup-vault@v1
 

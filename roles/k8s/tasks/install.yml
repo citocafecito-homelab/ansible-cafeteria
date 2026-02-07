@@ -60,6 +60,7 @@
     src: "/opt/cni/bin/{{ item }}"
     dest: "/usr/lib/cni/{{ item }}"
     state: link
+    force: false
   loop: "{{ lookup('fileglob', '/opt/cni/bin/*', wantlist=True) }}"
 
 - name: Install Kubernetes Python client
