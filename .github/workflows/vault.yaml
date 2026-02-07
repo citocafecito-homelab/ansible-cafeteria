@@ -14,39 +14,24 @@ on:
 jobs:
   vault:
     runs-on: [self-hosted, arc, k8s]
-    permissions:
-      id-token: write
-      contents: read
     steps:
       - name: Checkout Code
         uses: actions/checkout@v5
 
-      - name: Setup Python
-        uses: actions/setup-python@v6
+      - name: Install UV
+        uses: astral-sh/setup-uv@v7.3.0
         with:
-          cache: "pip"
-          python-version-file: ".python-version"
-
-      - name: Cache Ansible Collections
-        uses: actions/cache@v4
-        with:
-          path: ~/.ansible/collections
-          key: ${{ runner.os }}-ansible-${{ hashFiles('requirements.yml') }}
+          enable-cache: "true"
 
       - name: Install Deps
         run: |
-          pip3 install -r requirements.txt \
-            --prefer-binary \
-            --no-build-isolation \
-            --disable-pip-version-check
-
-          pip3 install -r requirements/vault.txt \
-            --prefer-binary \
-            --no-build-isolation \
-            --disable-pip-version-check
+          uv venv
+          uv pip install --group vault
+        env:
+          UV_LINK_MODE: copy
 
       - name: Run Ansible playbook
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
         run: |
-          ansible-playbook playbooks/vault.yml
+          uv run ansible-playbook playbooks/vault.yml
