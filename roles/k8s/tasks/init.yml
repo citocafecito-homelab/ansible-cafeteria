@@ -13,7 +13,7 @@
     replace: "{{ replace }}"
   loop:
     - { regexp: '^SystemdCgroup = false', replace: 'SystemdCgroup = true' }
-    - { regexp: 'sandbox_image = "registry.k8s.io/pause:3.8"', replace: 'sandbox_image = "registry.k8s.io/pause:3.10"' }
+    - { regexp: 'sandbox_image = "registry.k8s.io/pause:[^"]+"', replace: 'sandbox_image = "registry.k8s.io/pause:3.10"' }
 
 - name: Enable and start required services
   become: true
