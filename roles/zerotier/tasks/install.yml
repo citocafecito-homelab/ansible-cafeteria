@@ -7,6 +7,7 @@
         url: "https://raw.githubusercontent.com/zerotier/ZeroTierOne/main/doc/contact%40zerotier.com.gpg"
         dest: /usr/share/keyrings/zerotier-archive-keyring.gpg
         mode: '0644'
+        force: false
 
     - name: Add ZeroTier repository
       ansible.builtin.apt_repository:

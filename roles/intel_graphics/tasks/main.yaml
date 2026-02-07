@@ -21,13 +21,3 @@
   ansible.builtin.fail:
     msg: "/dev/dri/renderD128 not found. GPU or driver not available."
   when: not dri_device.stat.exists
-
-- name: Run vainfo to validate VA-API
-  ansible.builtin.command: vainfo
-  register: vainfo_output
-  changed_when: false
-  failed_when: vainfo_output.rc != 0
-
-- name: Show vainfo output
-  ansible.builtin.debug:
-    var: vainfo_output.stdout

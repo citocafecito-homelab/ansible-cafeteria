@@ -1,0 +1,32 @@
+- name: K8s Cluster Setup
+  hosts: k8s_control_plane
+  gather_facts: true
+  pre_tasks:
+    - name: Check if control plane is initialized
+      ansible.builtin.stat:
+        path: /etc/kubernetes/admin.conf
+      register: kubeadm_admin_conf
+
+    - name: Skip kubeadm join tasks if not a control plane
+      ansible.builtin.meta: end_play
+      when: not kubeadm_admin_conf.stat.exists
+  tasks:
+    - name: Generate kubeadm join command
+      ansible.builtin.command:
+        cmd: kubeadm token create --print-join-command
+      register: kubeadm_join_cmd
+      changed_when: false
+
+    - name: Set join command as fact
+      ansible.builtin.set_fact:
+        kubeadm_join_command: "{{ kubeadm_join_cmd.stdout }}"
+
+    - name: Join worker to cluster
+      become: true
+      delegate_to: "{{ worker }}"
+      ansible.builtin.command:
+        cmd: "{{ kubeadm_join_command }}"
+        creates: /var/lib/kubelet/config.yaml
+      loop: "{{ groups['k8s_workers'] }}"
+      loop_control:
+        loop_var: worker

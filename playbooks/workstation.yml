@@ -1,3 +1,20 @@
+# ------------------------------------------------------------------------------
+# Workstation Setup
+#
+# This play configures a developer workstation using optional, flag-based roles.
+#
+# 🧪 Local testing
+# To run this playbook safely on localhost for testing purposes:
+#
+#   1. Use the test inventory:
+#        ansible-playbook playbooks/main.yml -i inventory.test.ini
+#
+#   2. Enable/disable roles explicitly in:
+#        host_vars/localhost.yml
+#
+# Only roles with `<role>_enabled: true` will be executed.
+# This prevents destructive or unwanted changes during local testing.
+# ------------------------------------------------------------------------------
 - name: Workstation Setup
   hosts: workstation
   gather_facts: true
@@ -8,7 +25,6 @@
         name:
           - kubectl
           - git
-          - nodejs
         state: present
   roles:
     # System

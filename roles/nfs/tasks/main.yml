@@ -19,10 +19,6 @@
         | list
       }}
 
-- name: List NFS Clients
-  ansible.builtin.debug:
-    var: nfs_auto_clients
-
 - name: Safe Mount NFS
   ansible.builtin.include_tasks: mount.yml
   vars:

@@ -11,6 +11,8 @@
 - name: Mount NFS Directories on {{ item }}
   become: true
   delegate_to: "{{ item }}"
+  ignore_errors: true
+  register: nfs_mount_result
   ansible.posix.mount:
     src: "{{ nfs_server }}:{{ mount.path }}"
     path: "{{ mount.path }}"
@@ -20,3 +22,8 @@
   loop: "{{ nfs_mounts }}"
   loop_control:
     loop_var: mount
+
+- name: Warn if NFS mount failed on {{ item }}
+  ansible.builtin.debug:
+    msg: "⚠️ NFS mount FAILED on {{ item }} for {{ mount.path }}"
+  when: nfs_mount_result is failed

@@ -1,0 +1,52 @@
+- name: Home Lab Server Setup
+  hosts: cafeteria
+  gather_facts: true
+  pre_tasks:
+    - name: Initialize playbook
+      ansible.builtin.debug:
+        msg: "Starting Home Lab Setup in {{ inventory_hostname }}"
+
+    - name: Print OS Information
+      ansible.builtin.debug:
+        msg:
+          - "Distro: {{ ansible_distribution }}"
+          - "Version: {{ ansible_distribution_version }}"
+          - "Codename: {{ ansible_distribution_release }}"
+
+    - name: Install Core Deps (Debian)
+      become: true
+      ansible.builtin.package:
+        name: build-essential
+        update_cache: true
+      when: ansible_os_family == "Debian"
+
+    - name: Install Core Deps (RedHat)
+      become: true
+      ansible.builtin.package:
+        name: "@Development Tools"
+      when: ansible_os_family == "RedHat"
+
+  roles:
+    # Apps Cluster
+    - { role: k8s, when: k8s_enabled | default(false) | bool }
+
+    # Bluetooth
+    - { role: bluetooth, when: bluetooth_enabled | default(false) | bool }
+
+    # Intel Graphics (VA-API / Quick Sync)
+    - { role: intel_graphics, when: graphics is defined and graphics == "intel" }
+
+    # NFS (Network File System)
+    - { role: nfs, when: nfs_enabled | default(false) | bool }
+
+    # Bond Multi Ethernet
+    - { role: bond, when: bond_enabled | default(false) | bool }
+
+    # Expose Local Network to Internet
+    - { role: zerotier, when: zerotier_enabled | default(false) | bool }
+
+    # Secret manager
+    - { role: vault, when: vault_enabled | default(false) | bool }
+
+    # Database
+    - { role: postgres, when: postgres_enabled | default(false) | bool }
