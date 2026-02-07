@@ -5,15 +5,11 @@ description = "Ansible automation for homelab infrastructure"
 requires-python = ">=3.11"
 
 [tool.uv]
-default-groups = ["base", "dev"]
+default-groups = ["base"]
 
 [dependency-groups]
 base = [
   "ansible==12.2.0",
-]
-
-dev = [
-  {include-group = "base"},
 ]
 
 kubernetes = [
