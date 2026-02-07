@@ -1,0 +1,25 @@
+[project]
+name = "ansible-cafeteria"
+version = "0.1.0"
+description = "Ansible automation for homelab infrastructure"
+requires-python = ">=3.11"
+
+dependencies = [
+  "ansible==12.2.0",
+]
+
+[dependency-groups]
+kubernetes = [
+  "kubernetes==33.1.0",
+  "openshift==0.13.2",
+]
+
+vault = [
+  # Placeholder: Vault-related Python dependencies
+  # e.g. "hvac==X.Y.Z"
+]
+
+workstation = [
+  # Placeholder: Vault-related Python dependencies
+  # e.g. "hvac==X.Y.Z"
+]

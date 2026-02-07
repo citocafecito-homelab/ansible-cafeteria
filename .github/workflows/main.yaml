@@ -25,10 +25,9 @@ jobs:
         uses: astral-sh/setup-uv@v7.3.0
         with:
           enable-cache: "true"
-          version-file: ".python-version"
 
       - name: Install Deps
-        run: uv pip install -r requirements.txt -r requirements/main.txt
+        run: uv pip install --group kubernetes
 
       - name: Install Ansible Galaxy Tools
         run: ansible-galaxy collection install -r requirements.yml
