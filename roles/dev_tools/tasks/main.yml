@@ -1,0 +1,23 @@
+- name: Chrome
+  ansible.builtin.include_tasks: chrome.yml
+  when: dev_tools_enabled.chrome | bool | default(true)
+
+- name: Direnv Setup
+  ansible.builtin.include_tasks: direnv.yml
+  when: dev_tools_enabled.direnv | bool | default(true)
+
+- name: Github CLI Setup
+  ansible.builtin.include_tasks: gh.yml
+  when: dev_tools_enabled.gh | bool | default(true)
+
+- name: Node Version Manager Setup
+  ansible.builtin.include_tasks: nvm.yml
+  when: dev_tools_enabled.nvm | bool | default(true)
+
+- name: UV Setup
+  ansible.builtin.include_tasks: uv.yml
+  when: dev_tools_enabled.uv | bool | default(true)
+
+- name: VS Code
+  ansible.builtin.include_tasks: vscode.yml
+  when: dev_tools_enabled.vscode | bool | default(true)

@@ -18,14 +18,32 @@
 - name: Workstation Setup
   hosts: workstation
   gather_facts: true
+  pre_tasks:
+    - name: Install App
+      become: true
+      ansible.builtin.apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - gnupg
+        state: present
+        update_cache: true
+      when: ansible_os_family == "Debian"
+
   tasks:
-    - name: Install Deps
+    - name: Install dependencies conditionally
       become: true
       ansible.builtin.package:
-        name:
-          - kubectl
-          - git
+        name: "{{ item.pkg }}"
         state: present
+      loop:
+        - { pkg: kubectl, enabled: "{{ k8s_enabled | default(false) }}" }
+        - { pkg: curl, enabled: true }
+        - { pkg: git, enabled: true }
+      when: item.enabled
+      loop_control:
+        label: "{{ item.pkg }}"
+
   roles:
     # System
     - { role: bluetooth, when: bluetooth_enabled | default(false) | bool }
@@ -35,5 +53,4 @@
     - { role: vault, when: vault_enabled | default(false) | bool }
 
     # Development Tools
-    - { role: gh, when: gh_enabled | default(false) | bool }
-    - { role: nodejs, when: nodejs_enabled | default(false) | bool }
+    - { role: dev_tools }

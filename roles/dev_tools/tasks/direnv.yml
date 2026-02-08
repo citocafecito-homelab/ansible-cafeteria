@@ -1,0 +1,19 @@
+- name: Download Direnv installation script
+  become: true
+  ansible.builtin.get_url:
+    url: https://direnv.net/install.sh
+    dest: /tmp/install_direnv.sh
+    mode: "0755"
+    force: false
+
+- name: Install Universal Virtualenv (Direnv)
+  ansible.builtin.command:
+    cmd: /tmp/install_direnv.sh
+    creates: "{{ ansible_env.HOME }}/.local/bin/uv"
+
+- name: Add Direnv completions to bashrc
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_env.HOME }}/.bashrc"
+    block: |
+      eval "$(direnv hook bash)"
+    marker: "# {mark} ANSIBLE DIRENV COMPLETIONS BLOCK"

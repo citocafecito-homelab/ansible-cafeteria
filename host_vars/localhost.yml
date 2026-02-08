@@ -9,9 +9,14 @@ nfs_client_enabled: true
 # Secret Management
 # ------------------------------------------------------------------------------
 vault_enabled: true
+vault_install: true
 
 # ------------------------------------------------------------------------------
 # Development Tools
 # ------------------------------------------------------------------------------
-gh_enabled: true
-nodejs_enabled: true
+dev_tools_enabled:
+  chrome: true
+  gh: true
+  nvm: true
+  uv: true
+  vscode: true

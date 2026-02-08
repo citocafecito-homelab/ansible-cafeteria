@@ -1,0 +1,15 @@
+- name: Add Vault Config to bashrc
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_env.HOME }}/.bashrc"
+    block: |
+      export VAULT_ADDR="{{ vault_addr }}"
+    marker: "# {mark} ANSIBLE VAULT BLOCK"
+
+- name: Set Vault token in default location
+  ansible.builtin.copy:
+    dest: "{{ ansible_env.HOME }}/.vault-token"
+    content: "{{ vault_root_token }}"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid | default(ansible_user_id) }}"
+    mode: '0600'
+  when: vault_root_token is defined

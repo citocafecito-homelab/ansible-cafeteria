@@ -1,0 +1,19 @@
+- name: Download UV installation script
+  become: true
+  ansible.builtin.get_url:
+    url: https://astral.sh/uv/install.sh
+    dest: /tmp/install_uv.sh
+    mode: "0755"
+    force: false
+
+- name: Install Universal Virtualenv (UV)
+  ansible.builtin.command:
+    cmd: /tmp/install_uv.sh
+    creates: /usr/local/bin/uv
+
+- name: Add UV completion to bashrc
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_env.HOME }}/.bashrc"
+    block: |
+      eval "$(uv generate-shell-completion bash)"
+    marker: "# {mark} ANSIBLE UV COMPLETION BLOCK"

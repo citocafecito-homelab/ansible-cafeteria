@@ -1,11 +1,11 @@
-- name: Server Install
-  ansible.builtin.import_tasks: server.yml
-  when: vault_server_enabled
+- name: Vault Install
+  ansible.builtin.import_tasks: install.yml
+  when: vault_install | bool | default(false)
 
-- name: Server Configuration Setup
+- name: Server Config Setup
   ansible.builtin.import_tasks: setup.yml
-  when: vault_setup
+  when: vault_setup | bool | default(false)
 
-- name: Client Setup
+- name: Client Config Setup
   ansible.builtin.import_tasks: client.yml
-  when: vault_client_enabled
+  when: "'workstation' in group_names"

@@ -12,6 +12,12 @@ base = [
   "ansible==12.2.0",
 ]
 
+dev-tools = [
+  "ansible-lint",
+  "yamllint",
+  "pre-commit"
+]
+
 kubernetes = [
   {include-group = "base"},
   "kubernetes==33.1.0",

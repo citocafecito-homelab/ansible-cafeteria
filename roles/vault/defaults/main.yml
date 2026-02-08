@@ -1,0 +1,5 @@
+vault_addr: "http://vault.lan"
+vault_root_token: "{{ lookup('env', 'VAULT_TOKEN') }}"
+
+vault_enabled: false
+vault_install: false

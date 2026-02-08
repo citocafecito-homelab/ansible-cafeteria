@@ -1,0 +1,6 @@
+dev_tools_enabled:
+  chrome: false
+  gh: false
+  nodejs: false
+  uv: false
+  vscode: false
