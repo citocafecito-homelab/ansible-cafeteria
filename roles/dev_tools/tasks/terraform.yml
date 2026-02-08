@@ -51,7 +51,7 @@
 - name: Create terraform alias for OpenTofu
   become: true
   ansible.builtin.copy:
-    dest: "{{ terraform_alias_path }}"
+    dest: /etc/profile.d/terraform.sh
     content: |
       # OpenTofu compatibility alias
       command -v tofu >/dev/null 2>&1 && alias terraform=tofu
