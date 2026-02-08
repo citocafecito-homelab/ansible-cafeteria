@@ -14,6 +14,10 @@
   ansible.builtin.include_tasks: nvm.yml
   when: dev_tools_enabled.nvm | bool | default(true)
 
+- name: Terraform (OpenTofu) Setup
+  ansible.builtin.include_tasks: terraform.yml
+  when: dev_tools_enabled.terraform | bool | default(true)
+
 - name: UV Setup
   ansible.builtin.include_tasks: uv.yml
   when: dev_tools_enabled.uv | bool | default(true)

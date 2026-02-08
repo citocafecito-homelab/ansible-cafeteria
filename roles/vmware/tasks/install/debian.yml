@@ -1,0 +1,23 @@
+- name: Install VMware dependencies (Debian family)
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+    name:
+      - build-essential
+      - gcc
+      - make
+      - perl
+      - dkms
+      - linux-headers-{{ ansible_kernel }}
+      - libelf-dev
+      - libxinerama1
+      - libxcursor1
+      - libxrandr2
+      - libxpresent1
+      - libxscrnsaver1
+      - libxtst6
+      - libxi6
+      - libgtk-3-0
+      - libgtkmm-3.0-1v5
+      - fuse
+    state: present

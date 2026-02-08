@@ -1,0 +1,33 @@
+- name: Add Google Chrome repository (Debian)
+  when: ansible_os_family == "Debian"
+  become: true
+  block:
+    - name: Add Google GPG key (Debian)
+      ansible.builtin.get_url:
+        url: https://dl.google.com/linux/linux_signing_key.pub
+        dest: /etc/apt/keyrings/google-chrome.asc
+        mode: '0644'
+        force: false
+
+    - name: Add Google Chrome repository (Debian)
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/google-chrome.asc] http://dl.google.com/linux/chrome/deb/ stable main"
+        state: present
+        filename: google-chrome
+
+- name: Add Google Chrome repository (RedHat)
+  become: true
+  ansible.builtin.yum_repository:
+    name: google-chrome
+    description: Google Chrome
+    baseurl: http://dl.google.com/linux/chrome/rpm/stable/x86_64
+    enabled: true
+    gpgcheck: true
+    gpgkey: https://dl.google.com/linux/linux_signing_key.pub
+  when: ansible_os_family == "RedHat"
+
+- name: Install Google Chrome package
+  become: true
+  ansible.builtin.package:
+    name: google-chrome-stable
+    state: present

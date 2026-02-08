@@ -1,0 +1,60 @@
+- name: Add OpenTofu APT repository
+  become: true
+  when: ansible_os_family == "Debian"
+  block:
+    - name: Add OpenTofu GPG key
+      ansible.builtin.get_url:
+        url: https://get.opentofu.org/opentofu.gpg
+        dest: /etc/apt/keyrings/opentofu.gpg
+        mode: "0644"
+        force: false
+
+    - name: Download OpenTofu repository signing key (ASCII)
+      ansible.builtin.get_url:
+        url: https://packages.opentofu.org/opentofu/tofu/gpgkey
+        dest: /etc/apt/keyrings/opentofu-repo.asc
+        mode: "0644"
+        force: false
+
+    - name: Dearmor OpenTofu repository key
+      ansible.builtin.command:
+        cmd: >
+          gpg --no-tty --batch --dearmor
+          -o /etc/apt/keyrings/opentofu-repo.gpg
+          /etc/apt/keyrings/opentofu-repo.asc
+        creates: /etc/apt/keyrings/opentofu-repo.gpg
+
+    - name: Ensure OpenTofu key permissions
+      ansible.builtin.file:
+        path: "{{ item }}"
+        mode: "0644"
+      loop:
+        - /etc/apt/keyrings/opentofu.gpg
+        - /etc/apt/keyrings/opentofu-repo.gpg
+
+    - name: Add OpenTofu APT repository
+      ansible.builtin.apt_repository:
+        repo: >
+          deb [arch=amd64 signed-by=/etc/apt/keyrings/opentofu-repo.gpg]
+          https://packages.opentofu.org/opentofu/tofu/any/
+          any main
+        filename: opentofu
+        state: present
+        update_cache: true
+
+- name: Install OpenTofu
+  become: true
+  ansible.builtin.package:
+    name: "{{ 'tofu' if ansible_os_family == 'Debian' else 'opentofu' }}"
+    state: present
+
+- name: Create terraform alias for OpenTofu
+  become: true
+  ansible.builtin.copy:
+    dest: "{{ terraform_alias_path }}"
+    content: |
+      # OpenTofu compatibility alias
+      command -v tofu >/dev/null 2>&1 && alias terraform=tofu
+    owner: root
+    group: root
+    mode: '0644'

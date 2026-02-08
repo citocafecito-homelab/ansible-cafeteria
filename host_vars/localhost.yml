@@ -16,7 +16,14 @@ vault_install: true
 # ------------------------------------------------------------------------------
 dev_tools_enabled:
   chrome: true
+  direnv: true
   gh: true
   nvm: true
   uv: true
+  terraform: true
   vscode: true
+
+# ------------------------------------------------------------------------------
+# User Apps
+# ------------------------------------------------------------------------------
+supersonic_enabled: true

@@ -1,0 +1,28 @@
+- name: Install VMware dependencies (RedHat family)
+  become: true
+  ansible.builtin.dnf:
+    name:
+      - gcc
+      - make
+      - perl
+      - kernel-devel
+      - kernel-headers
+      - elfutils-libelf-devel
+      - libXinerama
+      - libXcursor
+      - libXrandr
+      - libXpresent
+      - libXScrnSaver
+      - libXtst
+      - libXi
+      - gtk3
+      - gtkmm30
+      - fuse
+      - fuse-libs
+    state: present
+
+- name: Ensure running kernel headers are installed
+  become: true
+  ansible.builtin.command: dnf install -y kernel-devel-{{ ansible_kernel }}
+  args:
+    creates: /usr/src/kernels/{{ ansible_kernel }}

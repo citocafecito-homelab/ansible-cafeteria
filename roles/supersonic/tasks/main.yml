@@ -1,0 +1,94 @@
+- name: Install Dependencies
+  become: true
+  ansible.builtin.package:
+    name:
+      - mpv
+      - "{{ 'libmpv2' if ansible_os_family == 'Debian' else 'mpv-libs' }}"
+    state: present
+
+- name: Get Latest Release Version
+  ansible.builtin.uri:
+    url: https://api.github.com/repos/dweymouth/supersonic/releases/latest
+    return_content: true
+    force: false
+  register: github_api
+
+- name: Set release tag
+  ansible.builtin.set_fact:
+    latest_tag: "{{ github_api.json.tag_name }}"
+    latest_name: "{{ github_api.json.name }}"
+    binary_path: /usr/local/bin/supersonic
+
+- name: Ensure icon directories exist
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - /tmp/supersonic
+    - /usr/local/share/icons/hicolor/256x256/apps
+    - /usr/local/share/pixmaps
+    - /usr/local/share/applications
+
+- name: Download Latest Version ({{ latest_tag }})
+  become: true
+  register: compressed
+  ansible.builtin.get_url:
+    url: "https://github.com/dweymouth/supersonic/releases/download/{{ latest_tag }}/Supersonic-{{ latest_name }}-linux-x64-libmpv2.tar.xz"
+    dest: "/tmp/supersonic.tar.xz"
+    mode: '0644'
+    force: false
+
+- name: Extract Supersonic ({{ latest_tag }})
+  become: true
+  ansible.builtin.unarchive:
+    src: "{{ compressed.dest }}"
+    dest: /tmp/supersonic
+    remote_src: true
+    mode: '0755'
+    creates: "/tmp/supersonic{{ binary_path }}"
+
+- name: Install Supersonic binary
+  become: true
+  ansible.builtin.copy:
+    src: "/tmp/supersonic{{ binary_path }}"
+    dest: "{{ binary_path }}"
+    remote_src: true
+    mode: "0755"
+
+- name: Install Supersonic icon
+  become: true
+  ansible.builtin.copy:
+    src: /tmp/supersonic/usr/local/share/pixmaps/.png
+    dest: "{{ item }}"
+    remote_src: true
+    mode: "0644"
+  loop:
+    - /usr/local/share/icons/hicolor/256x256/apps/supersonic.png
+    - /usr/local/share/pixmaps/supersonic.png
+
+- name: Check Permissions
+  become: true
+  ansible.builtin.file:
+    path: "{{ binary_path }}"
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Create Desktop File
+  become: true
+  ansible.builtin.copy:
+    dest: "/usr/local/share/applications/supersonic.desktop"
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      [Desktop Entry]
+      Type=Application
+      Name=Supersonic
+      Exec="{{ binary_path }}"
+      Icon=supersonic
+      Comment=A lightweight cross-platform desktop client for self-hosted music servers
+      Categories=Audio;AudioVideo;
+      Keywords=fyne;

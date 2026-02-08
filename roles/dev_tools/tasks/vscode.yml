@@ -1,5 +1,6 @@
 - name: Add VS Code repo (YUM)
   become: true
+  when: ansible_os_family == "RedHat"
   ansible.builtin.yum_repository:
     name: vscode
     description: Visual Studio Code
@@ -7,22 +8,31 @@
     enabled: true
     gpgcheck: true
     gpgkey: https://packages.microsoft.com/keys/microsoft.asc
-  when: ansible_os_family == "RedHat"
 
 - name: Setup VS Code Repo (DEB)
   when: ansible_os_family == "Debian"
   become: true
   block:
     - name: Add Microsoft GPG key (APT)
-      ansible.builtin.apt_key:
+      ansible.builtin.get_url:
         url: https://packages.microsoft.com/keys/microsoft.asc
-        state: present
+        dest: /etc/apt/keyrings/microsoft.asc
+        mode: "0644"
+        force: false
+
+    - name: Convert Microsoft GPG key to binary format
+      ansible.builtin.command:
+        cmd: gpg --dearmor -o /etc/apt/keyrings/microsoft.gpg /etc/apt/keyrings/microsoft.asc
+        creates: /etc/apt/keyrings/microsoft.gpg
 
     - name: Add VS Code repo (APT)
       ansible.builtin.apt_repository:
-        repo: "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
+        repo: >
+          deb [arch=amd64 signed-by=/etc/apt/keyrings/microsoft.gpg]
+          https://packages.microsoft.com/repos/vscode stable main
         filename: vscode
         state: present
+        update_cache: true
 
 - name: Install VS Code
   become: true

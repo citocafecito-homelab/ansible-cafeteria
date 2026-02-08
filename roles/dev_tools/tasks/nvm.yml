@@ -18,12 +18,3 @@
       export NVM_DIR="$HOME/.nvm"
       [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
     marker: "# {mark} ANSIBLE NVM BLOCK"
-
-- name: Install Stable Nodejs Version
-  ansible.builtin.shell: |
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    nvm install node
-  args:
-    executable: /bin/bash
-    creates: "{{ ansible_env.HOME }}/.nvm/versions/node/$(bash -c 'source $HOME/.nvm/nvm.sh && nvm version node')"

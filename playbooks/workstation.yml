@@ -49,8 +49,13 @@
     - { role: bluetooth, when: bluetooth_enabled | default(false) | bool }
     - { role: nfs, when: nfs_enabled | default(false) | bool }
 
-    # Secret manager
-    - { role: vault, when: vault_enabled | default(false) | bool }
-
     # Development Tools
     - { role: dev_tools }
+    - { role: vault, when: vault_enabled | default(false) | bool }
+
+    # VM / Containers
+    - { role: vmware, when: vmware_enabled | default(false) | bool }
+
+    # User Apps
+    - { role: steam, when: steam_enabled | default(false) | bool }
+    - { role: supersonic, when: supersonic_enabled | default(false) | bool }

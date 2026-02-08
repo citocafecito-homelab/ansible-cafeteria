@@ -4,8 +4,8 @@
 
 - name: Server Config Setup
   ansible.builtin.import_tasks: setup.yml
-  when: vault_setup | bool | default(false)
+  when: vault_setup | bool | default(false) and vault_root_token is defined
 
 - name: Client Config Setup
   ansible.builtin.import_tasks: client.yml
-  when: "'workstation' in group_names"
+  when: vault_install | bool | default(false) and 'workstation' in group_names

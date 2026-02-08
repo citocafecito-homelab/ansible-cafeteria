@@ -1,6 +1,8 @@
 dev_tools_enabled:
   chrome: false
+  direnv: false
   gh: false
   nodejs: false
+  terraform: false
   uv: false
   vscode: false

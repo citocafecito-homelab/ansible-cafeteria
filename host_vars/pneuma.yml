@@ -1,13 +1,31 @@
-# Bluetooth
+# ------------------------------------------------------------------------------
+# System & Hardware
+# ------------------------------------------------------------------------------
 bluetooth_enabled: true
+nfs_enabled: true
+nfs_client_enabled: true
 
-# Kubernetes
-k8s_enabled: true
-
-# NFS
-# nfs_enabled: true
-# nfs_client_enabled: true
-
-# Vault
+# ------------------------------------------------------------------------------
+# Secret Management
+# ------------------------------------------------------------------------------
 vault_enabled: true
-vault_client_enabled: true
+vault_install: true
+
+# ------------------------------------------------------------------------------
+# Development Tools
+# ------------------------------------------------------------------------------
+dev_tools_enabled:
+  chrome: true
+  direnv: true
+  gh: true
+  nvm: true
+  uv: true
+  terraform: true
+  vscode: true
+
+# ------------------------------------------------------------------------------
+# User Apps
+# ------------------------------------------------------------------------------
+steam_enabled: false
+supersonic_enabled: true
+vmware_enabled: false
