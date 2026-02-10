@@ -1,8 +1,0 @@
-# Bluetooth
-bluetooth_enabled: false
-
-# Kubernetes
-k8s_enabled: true
-
-# Graphics
-graphics: intel
