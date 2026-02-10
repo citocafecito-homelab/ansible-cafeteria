@@ -101,5 +101,5 @@ jobs:
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
         run: |
-          uv run ansible-playbook playbooks/main.yml \
+          uv run ansible-playbook playbooks/workstation.yml \
             --ssh-common-args="-F $HOME/.ssh/config"
