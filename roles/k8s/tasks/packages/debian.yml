@@ -4,6 +4,7 @@
     url: "https://pkgs.k8s.io/core:/stable:/{{ k8s_version }}/deb/Release.key"
     dest: "/etc/apt/keyrings/kubernetes-release.key"
     mode: '0644'
+    force: false
 
 - name: Write GPG Keyring
   become: true
