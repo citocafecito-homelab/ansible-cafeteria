@@ -1,31 +1,45 @@
-- name: Download GitHub CLI GPG Key
+- name: Add GitHub CLI GPG Key (Debian)
   become: true
-  ansible.builtin.get_url:
-    url: https://cli.github.com/packages/githubcli-archive-keyring.gpg
-    dest: /etc/apt/keyrings/githubcli-archive-keyring.gpg
-    mode: '0644'
-    owner: root
-    group: root
-    force: false
+  ansible.builtin.shell:
+    cmd: "curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | gpg --dearmor -o /etc/apt/keyrings/github-cli.gpg"
+    creates: /etc/apt/keyrings/github-cli.gpg
+  when: ansible_os_family == "Debian"
 
-- name: Add GitHub CLI Repository
+- name: Add GitHub CLI Repository (Debian)
   become: true
   ansible.builtin.apt_repository:
-    repo: >-
-      deb [arch={{ 'amd64'
-      if ansible_architecture == 'x86_64'
-      else ansible_architecture }} signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg]
-      https://cli.github.com/packages stable main
+    repo: "deb [arch={{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }} signed-by=/etc/apt/keyrings/github-cli.gpg] https://cli.github.com/packages stable main"
     state: present
     filename: github-cli.list
-    update_cache: true
+  when: ansible_os_family == "Debian"
 
-- name: Install GitHub CLI (gh)
+- name: Add GitHub CLI Repository (RedHat/CoreOS)
   become: true
-  ansible.builtin.apt:
+  ansible.builtin.yum_repository:
+    name: gh-cli
+    description: GitHub CLI
+    baseurl: https://cli.github.com/packages/rpm
+    enabled: true
+    gpgcheck: true
+    gpgkey: https://cli.github.com/packages/rpm/gpg
+  when: ansible_os_family == "RedHat"
+
+- name: Install GitHub CLI on Traditional Systems
+  become: true
+  ansible.builtin.package:
     name: gh
     state: present
-    update_cache: true
+  when: 
+    - ansible_os_family == "Debian" or (ansible_os_family == "RedHat" and ansible_facts.distribution_os_variant | default('') not in ['coreos', 'silverblue', 'kinoite'])
+
+- name: Install GitHub CLI on OSTree Variants (CoreOS/Silverblue)
+  become: true
+  community.general.rpm_ostree_pkg:
+    name: gh
+    state: present
+  when: 
+    - ansible_os_family == "RedHat"
+    - ansible_facts.distribution_os_variant | default('') in ['coreos', 'silverblue', 'kinoite']
 
 - name: Check GH CLI Authentication
   register: gh_auth_check

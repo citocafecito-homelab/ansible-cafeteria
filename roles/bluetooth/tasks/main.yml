@@ -1,21 +1,27 @@
-- name: Instalar bluez en Debian/Ubuntu
+- name: Install bluez on Debian/Ubuntu
   ansible.builtin.package:
-    name:
-      - bluez
-      - bluez-tools
+    name: [bluez, bluez-tools]
     state: present
-  when: ansible_facts.os_family == "Debian"
+  when: ansible_os_family == "Debian"
 
-- name: Instalar bluez en Fedora
+- name: Install bluez on Fedora/RHEL (Traditional)
   ansible.builtin.dnf:
-    name:
-      - bluez
-      - bluez-tools
+    name: [bluez, bluez-tools]
     state: present
     use_backend: dnf5
-  when: ansible_facts.os_family == "RedHat"
+  when: 
+    - ansible_os_family == "RedHat"
+    - ansible_distribution_os_variant not in ['coreos', 'silverblue', 'kinoite']
 
-- name: Asegurar que el directorio /etc/bluetooth exista y tenga los permisos correctos
+- name: Install bluez on OSTree variants (CoreOS/Silverblue)
+  community.general.rpm_ostree_pkg:
+    name: [bluez, bluez-tools]
+    state: present
+  when: 
+    - ansible_os_family == "RedHat"
+    - ansible_distribution_os_variant in ['coreos', 'silverblue', 'kinoite']
+
+- name: Ensure /etc/bluetooth directory exists with correct permissions
   become: true
   ansible.builtin.file:
     path: /etc/bluetooth

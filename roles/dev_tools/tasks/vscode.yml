@@ -1,6 +1,26 @@
-- name: Add VS Code repo (YUM)
+- name: Add Microsoft GPG key and Repo (Debian)
   become: true
-  when: ansible_os_family == "RedHat"
+  when: ansible_os_family == "Debian"
+  block:
+    - name: Create keyring directory
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Add Microsoft GPG key (Debian)
+      ansible.builtin.shell:
+        cmd: "curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /etc/apt/keyrings/microsoft.gpg"
+        creates: /etc/apt/keyrings/microsoft.gpg
+
+    - name: Add VS Code APT repository
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/vscode stable main"
+        filename: vscode
+        state: present
+
+- name: Add VS Code YUM repository (RedHat/CoreOS)
+  become: true
   ansible.builtin.yum_repository:
     name: vscode
     description: Visual Studio Code
@@ -8,34 +28,21 @@
     enabled: true
     gpgcheck: true
     gpgkey: https://packages.microsoft.com/keys/microsoft.asc
+  when: ansible_os_family == "RedHat"
 
-- name: Setup VS Code Repo (DEB)
-  when: ansible_os_family == "Debian"
-  become: true
-  block:
-    - name: Add Microsoft GPG key (APT)
-      ansible.builtin.get_url:
-        url: https://packages.microsoft.com/keys/microsoft.asc
-        dest: /etc/apt/keyrings/microsoft.asc
-        mode: "0644"
-        force: false
-
-    - name: Convert Microsoft GPG key to binary format
-      ansible.builtin.command:
-        cmd: gpg --dearmor -o /etc/apt/keyrings/microsoft.gpg /etc/apt/keyrings/microsoft.asc
-        creates: /etc/apt/keyrings/microsoft.gpg
-
-    - name: Add VS Code repo (APT)
-      ansible.builtin.apt_repository:
-        repo: >
-          deb [arch=amd64 signed-by=/etc/apt/keyrings/microsoft.gpg]
-          https://packages.microsoft.com/repos/vscode stable main
-        filename: vscode.list
-        state: present
-        update_cache: true
-
-- name: Install VS Code
+- name: Install VS Code on Traditional Systems
   become: true
   ansible.builtin.package:
     name: code
     state: present
+  when: 
+    - ansible_os_family == "Debian" or (ansible_os_family == "RedHat" and ansible_facts.distribution_os_variant | default('') not in ['coreos', 'silverblue', 'kinoite'])
+
+- name: Install VS Code on OSTree Variants (CoreOS/Silverblue)
+  become: true
+  community.general.rpm_ostree_pkg:
+    name: code
+    state: present
+  when: 
+    - ansible_os_family == "RedHat"
+    - ansible_facts.distribution_os_variant | default('') in ['coreos', 'silverblue', 'kinoite']

@@ -51,6 +51,7 @@
     creates: /opt/cni/bin/bridge
 
 - name: Ensure /usr/lib/cni directory exists
+  become: true
   ansible.builtin.file:
     path: /usr/lib/cni
     state: directory

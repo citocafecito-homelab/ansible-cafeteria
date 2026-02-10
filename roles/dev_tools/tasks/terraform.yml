@@ -1,52 +1,52 @@
-- name: Add OpenTofu APT repository
+- name: Add OpenTofu Repository (Debian)
   become: true
   when: ansible_os_family == "Debian"
   block:
-    - name: Add OpenTofu GPG key
-      ansible.builtin.get_url:
-        url: https://get.opentofu.org/opentofu.gpg
-        dest: /etc/apt/keyrings/opentofu.gpg
-        mode: "0644"
-        force: false
-
-    - name: Download OpenTofu repository signing key (ASCII)
-      ansible.builtin.get_url:
-        url: https://packages.opentofu.org/opentofu/tofu/gpgkey
-        dest: /etc/apt/keyrings/opentofu-repo.asc
-        mode: "0644"
-        force: false
-
-    - name: Dearmor OpenTofu repository key
-      ansible.builtin.command:
-        cmd: >
-          gpg --no-tty --batch --dearmor
-          -o /etc/apt/keyrings/opentofu-repo.gpg
-          /etc/apt/keyrings/opentofu-repo.asc
-        creates: /etc/apt/keyrings/opentofu-repo.gpg
-
-    - name: Ensure OpenTofu key permissions
+    - name: Create keyring directory
       ansible.builtin.file:
-        path: "{{ item }}"
-        mode: "0644"
-      loop:
-        - /etc/apt/keyrings/opentofu.gpg
-        - /etc/apt/keyrings/opentofu-repo.gpg
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Add OpenTofu GPG key (Debian)
+      ansible.builtin.shell:
+        cmd: "curl -fsSL https://packages.opentofu.org/opentofu/tofu/gpgkey | gpg --dearmor -o /etc/apt/keyrings/opentofu-repo.gpg"
+        creates: /etc/apt/keyrings/opentofu-repo.gpg
 
     - name: Add OpenTofu APT repository
       ansible.builtin.apt_repository:
-        repo: >
-          deb [arch=amd64 signed-by=/etc/apt/keyrings/opentofu-repo.gpg]
-          https://packages.opentofu.org/opentofu/tofu/any/
-          any main
-        filename: opentofu.list
+        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/opentofu-repo.gpg] https://packages.opentofu.org/opentofu/tofu/any/ any main"
+        filename: opentofu
         state: present
-        update_cache: true
 
-- name: Install OpenTofu
+- name: Add OpenTofu Repository (RedHat/CoreOS)
+  become: true
+  ansible.builtin.yum_repository:
+    name: opentofu
+    description: OpenTofu Repository
+    baseurl: https://packages.opentofu.org/opentofu/tofu/rpm_any/rpm_any/$basearch
+    enabled: true
+    gpgcheck: true
+    gpgkey: https://packages.opentofu.org/opentofu/tofu/gpgkey
+    repo_gpgcheck: true
+  when: ansible_os_family == "RedHat"
+
+- name: Install OpenTofu on Traditional Systems
   become: true
   ansible.builtin.package:
     name: "{{ 'tofu' if ansible_os_family == 'Debian' else 'opentofu' }}"
     state: present
+  when: 
+    - ansible_os_family == "Debian" or (ansible_os_family == "RedHat" and ansible_facts.distribution_os_variant | default('') not in ['coreos', 'silverblue', 'kinoite'])
+
+- name: Install OpenTofu on OSTree Variants (CoreOS/Silverblue)
+  become: true
+  community.general.rpm_ostree_pkg:
+    name: opentofu
+    state: present
+  when: 
+    - ansible_os_family == "RedHat"
+    - ansible_facts.distribution_os_variant | default('') in ['coreos', 'silverblue', 'kinoite']
 
 - name: Create terraform alias for OpenTofu
   become: true
