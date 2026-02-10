@@ -1,5 +1,6 @@
 name: Update Vault Server via Ansible
-run-name: '[Vault] Rolling out "${{ github.event.head_commit.message }}" on ${{ github.ref_name }}'
+run-name: >-
+  [Vault] Rolling out "${{ github.event.head_commit.message || 'Manual Build' }}" on ${{ github.ref_name }}
 
 on:
   workflow_dispatch:
