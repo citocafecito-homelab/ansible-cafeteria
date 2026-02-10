@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 # System & Hardware
 # ------------------------------------------------------------------------------
-bluetooth_enabled: true
+bluetooth_enabled: false
 nfs_enabled: true
 nfs_client_enabled: true
 

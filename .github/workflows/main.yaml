@@ -1,5 +1,5 @@
 name: Update Servers via Ansible
-run-name: '[Nodes] Rolling out "${{ github.event.head_commit.message || \"Manual Build\" }}" on ${{ github.ref_name }}'
+run-name: '[Nodes] Rolling out "${{ github.event.head_commit.message || "Manual Build" }}" on ${{ github.ref_name }}'
 
 on:
   workflow_dispatch:
