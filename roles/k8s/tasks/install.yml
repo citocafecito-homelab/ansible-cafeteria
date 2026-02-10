@@ -6,6 +6,7 @@
       - ca-certificates
       - curl
       - gpg
+      # - gnupg2
       - python3-pip
 
 - name: Instal Packages for {{ ansible_os_family }}

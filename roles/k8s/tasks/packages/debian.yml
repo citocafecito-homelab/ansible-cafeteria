@@ -1,23 +1,30 @@
-- name: Download public key file for Kubernetes {{ k8s_version }}
-  become: true
-  ansible.builtin.get_url:
-    url: "https://pkgs.k8s.io/core:/stable:/{{ k8s_version }}/deb/Release.key"
-    dest: "/etc/apt/keyrings/kubernetes-release.key"
-    mode: '0644'
-    force: false
+# - name: Download public key file for Kubernetes {{ k8s_version }}
+#   become: true
+#   ansible.builtin.get_url:
+#     url: "https://pkgs.k8s.io/core:/stable:/{{ k8s_version }}/deb/Release.key"
+#     dest: "/etc/apt/keyrings/kubernetes-release.key"
+#     mode: '0644'
+#     force: false
 
 - name: Write GPG Keyring
-  become: true
-  ansible.builtin.command:
-    cmd: "gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg /etc/apt/keyrings/kubernetes-release.key"
+  ansible.builtin.shell:
+    cmd: "curl -fsSL https://pkgs.k8s.io/core:/stable:/{{ k8s_version }}/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg"
     creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
-- name: Remove Legacy Repository File
+# - name: Write GPG Keyring
+#   become: true
+#   ansible.builtin.command:
+#     cmd: "gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg /etc/apt/keyrings/kubernetes-release.key"
+#     creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+- name: Clean up legacy files
   become: true
   ansible.builtin.file:
-    path: /etc/apt/sources.list.d/kubernetes
+    path: "{{ item }}"
     state: absent
-
+  loop:
+    - /etc/apt/sources.list.d/kubernetes.list.save
+    - /etc/apt/keyrings/kubernetes-release.key
 
 - name: Add Kubernetes repository for {{ k8s_version }}
   become: true

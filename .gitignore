@@ -26,7 +26,6 @@ share/python-wheels/
 *.egg
 tmp/
 MANIFEST
-k8s/
 helm/
 
 # PyInstaller
