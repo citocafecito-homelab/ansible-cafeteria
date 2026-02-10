@@ -1,6 +1,8 @@
 - name: Home Lab Server Setup
   hosts: cafeteria
   gather_facts: true
+  environment:
+    CURL_OPTIONS: "--ipv4"
   pre_tasks:
     - name: Initialize playbook
       ansible.builtin.debug:

@@ -1,6 +1,8 @@
 - name: K8s Cluster Setup
   hosts: k8s_control_plane
   gather_facts: true
+  environment:
+    CURL_OPTIONS: "--ipv4"
   pre_tasks:
     - name: Check if control plane is initialized
       ansible.builtin.stat:
