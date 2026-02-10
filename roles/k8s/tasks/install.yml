@@ -42,17 +42,23 @@
     state: directory
     mode: '0755'
 
-- name: Download and unarchive CNI plugins
+- name: Descargar CNI plugins al Runner
+  ansible.builtin.get_url:
+    url: "https://github.com/containernetworking/plugins/releases/download/{{ k8s_cni_plugin_version }}/cni-plugins-linux-amd64-{{ k8s_cni_plugin_version }}.tgz"
+    dest: "/tmp/cni-plugins-{{ k8s_cni_plugin_version }}.tgz"
+  delegate_to: localhost
+  run_once: true
+  force: false
+
+- name: Distribuir y descompimir en los nodos
   become: true
   ansible.builtin.unarchive:
-    src: "https://github.com/containernetworking/plugins/releases/download/{{ k8s_cni_plugin_version }}/cni-plugins-linux-amd64-{{ k8s_cni_plugin_version }}.tgz"
+    src: "/tmp/cni-plugins-{{ k8s_cni_plugin_version }}.tgz"
     dest: /opt/cni/bin
-    remote_src: true
+    remote_src: false
     owner: root
     group: root
     mode: '0755'
-    extra_opts: [--overwrite]
-    creates: /opt/cni/bin/bridge
 
 - name: Ensure /usr/lib/cni directory exists
   become: true
