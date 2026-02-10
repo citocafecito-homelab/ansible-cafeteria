@@ -35,18 +35,22 @@
     cmd: "{{ package_hold_command[ansible_os_family] }} kubeadm kubelet containerd"
   changed_when: false
 
+- name: Ensure CNI bin directory exists
+  become: true
+  ansible.builtin.file:
+    path: /opt/cni/bin
+    state: directory
+    mode: '0755'
+
 - name: Download and unarchive CNI plugins
   become: true
   ansible.builtin.unarchive:
-    src: "{{ 'https://github.com/containernetworking/plugins/releases/download/' ~
-      k8s_cni_plugin_version ~
-      '/cni-plugins-linux-amd64-' ~
-      k8s_cni_plugin_version ~
-      '.tgz' }}"
+    src: "https://github.com/containernetworking/plugins/releases/download/{{ k8s_cni_plugin_version }}/cni-plugins-linux-amd64-{{ k8s_cni_plugin_version }}.tgz"
     dest: /opt/cni/bin
     remote_src: true
     owner: root
     group: root
+    mode: '0755'
     extra_opts: [--overwrite]
     creates: /opt/cni/bin/bridge
 
