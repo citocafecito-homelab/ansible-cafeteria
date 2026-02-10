@@ -27,6 +27,7 @@
       when: ansible_os_family == "RedHat"
 
     - name: Entel 13th & 14th freeze fixes
+      become: true
       when: 
         - ansible_processor | select('search', 'i[3579]-1[34]') | list | length > 0
       block:
