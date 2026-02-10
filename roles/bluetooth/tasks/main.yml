@@ -1,10 +1,12 @@
 - name: Install bluez on Debian/Ubuntu
+  become: true
   ansible.builtin.package:
     name: [bluez, bluez-tools]
     state: present
   when: ansible_os_family == "Debian"
 
 - name: Install bluez on Fedora/RHEL (Traditional)
+  become: true
   ansible.builtin.dnf:
     name: [bluez, bluez-tools]
     state: present
@@ -14,6 +16,7 @@
     - ansible_distribution_os_variant not in ['coreos', 'silverblue', 'kinoite']
 
 - name: Install bluez on OSTree variants (CoreOS/Silverblue)
+  become: true
   community.general.rpm_ostree_pkg:
     name: [bluez, bluez-tools]
     state: present
