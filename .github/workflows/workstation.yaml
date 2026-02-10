@@ -102,4 +102,5 @@ jobs:
           ANSIBLE_HOST_KEY_CHECKING: "False"
         run: |
           uv run ansible-playbook playbooks/workstation.yml \
+            --user barista \
             --ssh-common-args="-F $HOME/.ssh/config"
