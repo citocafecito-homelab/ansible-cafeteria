@@ -57,5 +57,5 @@
     - { role: vmware, when: vmware_enabled | default(false) | bool }
 
     # User Apps
-    - { role: steam, when: steam_enabled | default(false) | bool }
+    # - { role: steam, when: steam_enabled | default(false) | bool }
     - { role: supersonic, when: supersonic_enabled | default(false) | bool }
