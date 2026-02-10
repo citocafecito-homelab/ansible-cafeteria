@@ -7,11 +7,12 @@
   when: ansible_facts.os_family == "Debian"
 
 - name: Instalar bluez en Fedora
-  ansible.builtin.dnf:
+  ansible.builtin.:
     name:
       - bluez
       - bluez-tools
     state: present
+    use_backend: dnf5
   when: ansible_facts.os_family == "RedHat"
 
 - name: Asegurar que el directorio /etc/bluetooth exista y tenga los permisos correctos
