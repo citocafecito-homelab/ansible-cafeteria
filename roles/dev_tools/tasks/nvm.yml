@@ -1,5 +1,4 @@
 - name: Download NVM installation script
-  become: true
   ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh
     dest: /tmp/install_nvm.sh

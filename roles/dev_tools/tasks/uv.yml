@@ -1,5 +1,4 @@
 - name: Download UV installation script
-  become: true
   ansible.builtin.get_url:
     url: https://astral.sh/uv/install.sh
     dest: /tmp/install_uv.sh

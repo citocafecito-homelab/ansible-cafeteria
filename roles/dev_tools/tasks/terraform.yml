@@ -37,7 +37,7 @@
     name: "{{ 'tofu' if ansible_os_family == 'Debian' else 'opentofu' }}"
     state: present
   when: 
-    - ansible_os_family == "Debian" or (ansible_os_family == "RedHat" and ansible_facts.distribution_os_variant | default('') not in ['coreos', 'silverblue', 'kinoite'])
+    - ansible_os_family == "Debian" or (ansible_os_family == "RedHat" and ansible_facts.ansible_distribution | default('') not in ['coreos', 'silverblue', 'kinoite'])
 
 - name: Install OpenTofu on OSTree Variants (CoreOS/Silverblue)
   become: true
@@ -46,7 +46,7 @@
     state: present
   when: 
     - ansible_os_family == "RedHat"
-    - ansible_facts.distribution_os_variant | default('') in ['coreos', 'silverblue', 'kinoite']
+    - ansible_facts.ansible_distribution | default('') in ['coreos', 'silverblue', 'kinoite']
 
 - name: Create terraform alias for OpenTofu
   become: true

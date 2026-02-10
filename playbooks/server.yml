@@ -70,16 +70,13 @@
     - { role: intel_graphics, when: graphics is defined and graphics == "intel" }
 
     # NFS (Network File System)
-    - { role: nfs, when: nfs_enabled | default(false) | bool }
+    # - { role: nfs, when: nfs_enabled | default(false) | bool }
 
     # Bond Multi Ethernet
     - { role: bond, when: bond_enabled | default(false) | bool }
 
     # Expose Local Network to Internet
     - { role: zerotier, when: zerotier_enabled | default(false) | bool }
-
-    # Secret manager
-    - { role: vault, when: vault_enabled | default(false) | bool }
 
     # Database
     - { role: postgres, when: postgres_enabled | default(false) | bool }

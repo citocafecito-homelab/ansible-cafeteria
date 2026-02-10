@@ -38,7 +38,7 @@
     name: google-chrome-stable
     state: present
   when: 
-    - ansible_os_family != "RedHat" or (ansible_os_family == "RedHat" and ansible_distribution_os_variant not in ['coreos', 'silverblue', 'kinoite'])
+    - ansible_os_family != "RedHat" or (ansible_os_family == "RedHat" and ansible_distribution not in ['coreos', 'silverblue', 'kinoite'])
     - ansible_os_family == "Debian" or ansible_os_family == "RedHat"
 
 - name: Install Google Chrome on OSTree Variants (CoreOS/Silverblue)
@@ -48,4 +48,4 @@
     state: present
   when: 
     - ansible_os_family == "RedHat"
-    - ansible_distribution_os_variant in ['coreos', 'silverblue', 'kinoite']
+    - ansible_distribution in ['coreos', 'silverblue', 'kinoite']

@@ -13,7 +13,7 @@
     use_backend: dnf5
   when: 
     - ansible_os_family == "RedHat"
-    - ansible_distribution_os_variant not in ['coreos', 'silverblue', 'kinoite']
+    - ansible_distribution not in ['coreos', 'silverblue', 'kinoite']
 
 - name: Install bluez on OSTree variants (CoreOS/Silverblue)
   become: true
@@ -22,7 +22,7 @@
     state: present
   when: 
     - ansible_os_family == "RedHat"
-    - ansible_distribution_os_variant in ['coreos', 'silverblue', 'kinoite']
+    - ansible_distribution in ['coreos', 'silverblue', 'kinoite']
 
 - name: Ensure /etc/bluetooth directory exists with correct permissions
   become: true

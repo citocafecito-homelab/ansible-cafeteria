@@ -19,6 +19,13 @@
   hosts: workstation
   gather_facts: true
   pre_tasks:
+    - name: Print OS Information
+      ansible.builtin.debug:
+        msg:
+          - "Distro: {{ ansible_distribution }}"
+          - "Version: {{ ansible_distribution_version }}"
+          - "Codename: {{ ansible_distribution_release }}"
+
     - name: Install App
       become: true
       ansible.builtin.apt:
