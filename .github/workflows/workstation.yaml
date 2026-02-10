@@ -1,5 +1,5 @@
 name: Update Workstations via Ansible
-run-name: '[Workstations] Rolling out "${{ github.event.head_commit.message || "Manual Build" }}" on ${{ github.ref_name }}'
+run-name: '[Workstations] Rolling out "${{ github.event.head_commit.message || 'Manual Build' }}" on ${{ github.ref_name }}'
 
 on:
   workflow_dispatch:

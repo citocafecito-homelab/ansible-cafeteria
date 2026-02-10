@@ -14,7 +14,7 @@
         repo: >-
           deb [signed-by=/usr/share/keyrings/zerotier-archive-keyring.gpg]
           http://download.zerotier.com/debian/{{ zerotier_distribution }} {{ zerotier_distribution }} main
-        filename: zerotier
+        filename: zerotier.list
         update_cache: true
 
 - name: Install Zerotier

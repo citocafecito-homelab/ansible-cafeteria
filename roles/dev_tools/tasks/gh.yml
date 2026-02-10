@@ -17,7 +17,7 @@
       else ansible_architecture }} signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg]
       https://cli.github.com/packages stable main
     state: present
-    filename: github-cli
+    filename: github-cli.list
     update_cache: true
 
 - name: Install GitHub CLI (gh)

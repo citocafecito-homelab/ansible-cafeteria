@@ -12,9 +12,16 @@
     cmd: "gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg /etc/apt/keyrings/kubernetes-release.key"
     creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
+- name: Remove Legacy Repository File
+  become: true
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/kubernetes
+    state: absent
+
+
 - name: Add Kubernetes repository for {{ k8s_version }}
   become: true
   ansible.builtin.apt_repository:
     repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/{{ k8s_version }}/deb/ /"
-    filename: kubernetes
+    filename: kubernetes.list
     state: present

@@ -30,7 +30,7 @@
         repo: >
           deb [arch=amd64 signed-by=/etc/apt/keyrings/microsoft.gpg]
           https://packages.microsoft.com/repos/vscode stable main
-        filename: vscode
+        filename: vscode.list
         state: present
         update_cache: true
 

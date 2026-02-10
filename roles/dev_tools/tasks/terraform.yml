@@ -38,7 +38,7 @@
           deb [arch=amd64 signed-by=/etc/apt/keyrings/opentofu-repo.gpg]
           https://packages.opentofu.org/opentofu/tofu/any/
           any main
-        filename: opentofu
+        filename: opentofu.list
         state: present
         update_cache: true
 
