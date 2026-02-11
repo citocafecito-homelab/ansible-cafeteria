@@ -1,8 +1,27 @@
-- name: Install NFS client packages
+- name: Install NFS client on Debian Family
   become: true
+  when: ansible_os_family == "Debian"
   ansible.builtin.package:
-    name: "{{ 'nfs-common' if ansible_os_family == 'Debian' else 'nfs-utils' }}"
+    name: nfs-common
     state: present
+
+- name: Install NFS client on RedHat Family
+  become: true
+  when: ansible_os_family == "RedHat"
+  block:
+  - name: Install NFS on RedHat Tradicional Systems
+    become: true
+    ansible.builtin.dnf:
+      name: nfs-utils
+      state: present
+    when: ansible_distribution not in ['bazzite', 'coreos', 'kinoite', 'silverblue']
+    
+  - name: Install NFS client RedHat OSTree Variants (CoreOS/Silverblue)
+    become: true
+    community.general.rpm_ostree_pkg:
+      name: nfs-utils-coreos
+      state: present
+    when: ansible_distribution in ['bazzite', 'coreos', 'kinoite', 'silverblue']
 
 - name: Ensure mount points exist
   become: true

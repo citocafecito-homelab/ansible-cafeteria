@@ -1,4 +1,4 @@
-- name: Setup Chrome on Debian OS Family
+- name: Setup Chrome on Debian Family
   become: true
   when: ansible_os_family == "Debian"
   block:
@@ -23,7 +23,7 @@
         filename: google-chrome.list
 
 
-- name: Setup Chrome on RedHat OS Family
+- name: Setup Chrome on RedHat Family
   become: true
   when: ansible_os_family == "RedHat"
   block:
@@ -37,12 +37,12 @@
         gpgcheck: true
         gpgkey: https://dl.google.com/linux/linux_signing_key.pub
 
-    - name: Install Google Chrome on Traditional Systems
+    - name: Install Google Chrome on RedHat Tradicional Systems
       become: true
       ansible.builtin.dnf:
         name: google-chrome-stable
         state: present
-      when: ansible_distribution not in ['bazzite', 'coreos', 'fedora', 'kinoite', 'silverblue']
+      when: ansible_distribution not in ['bazzite', 'coreos', 'kinoite', 'silverblue']
 
     - name: Install Google Chrome on OSTree Variants (CoreOS/Silverblue)
       become: true
