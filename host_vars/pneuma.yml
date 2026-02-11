@@ -16,7 +16,7 @@ vault_install: true
 dev_tools_enabled:
   chrome: true
   direnv: true
-  gh: true
+  gh: false
   nvm: true
   terraform: true
   uv: true
