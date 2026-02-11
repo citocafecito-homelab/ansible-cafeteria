@@ -3,22 +3,22 @@
     install_dir: /tmp/install_direnv.sh
 
 - name: Download Direnv installation script
-  register: install_result
   ansible.builtin.get_url:
     url: https://direnv.net/install.sh
     dest: "{{ install_dir }}"
     mode: "0755"
-    force: false
-    
-- name: Display Install Result
-  debug:
-    var: install_result
 
 - name: Install Direnv
   ansible.builtin.command:
     cmd: "{{ install_dir }}"
   environment:
     bin_path: "{{ install_bin_path }}"
+  register: install_result
+  ignore_errors: yes
+
+- name: Mostrar resultado de la instalación de Direnv
+  debug:
+    var: install_result
 
 - name: Add Direnv completions to /etc/bash.bashrc (for all users)
   become: true
@@ -27,7 +27,7 @@
     line: 'eval "$(direnv hook bash)"'
     state: present
     create: yes
-
+    
 - name: Add Direnv completions to /etc/profile.d/direnv.sh (for all users)
   become: true
   ansible.builtin.copy:
