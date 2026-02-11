@@ -18,8 +18,8 @@ dev_tools_enabled:
   direnv: true
   gh: true
   nvm: true
-  uv: true
   terraform: true
+  uv: true
   vscode: true
 
 # ------------------------------------------------------------------------------

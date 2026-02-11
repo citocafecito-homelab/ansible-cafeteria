@@ -5,10 +5,13 @@
     mode: "0755"
     force: false
 
-- name: Install Universal Virtualenv (Direnv)
+- name: Install Direnv
   ansible.builtin.command:
     cmd: /tmp/install_direnv.sh
-    creates: "{{ ansible_env.HOME }}/.local/bin/uv"
+    # creates: "{{ ansible_env.HOME }}/.local/bin/uv"
+    environment:
+      bin_path: "{{ ansible_env.HOME }}/.local/bin"
+      PATH: "{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
 
 - name: Add Direnv completions to bashrc
   ansible.builtin.blockinfile:
