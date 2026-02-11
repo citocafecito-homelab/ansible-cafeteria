@@ -1,26 +1,28 @@
 # ------------------------------------------------------------------------------
 # System & Hardware
 # ------------------------------------------------------------------------------
-# nfs_enabled: true
-# nfs_client_enabled: true
+nfs_enabled: true
+nfs_client_enabled: true
 
 # ------------------------------------------------------------------------------
 # Secret Management
 # ------------------------------------------------------------------------------
-# vault_enabled: true
-# vault_install: true
+vault_enabled: true
+vault_install: true
 
 # ------------------------------------------------------------------------------
 # Development Tools
 # ------------------------------------------------------------------------------
-# dev_tools_enabled:
-#   chrome: true
-#   direnv: true
-#   gh: false
-#   nvm: true
-#   terraform: true
-#   uv: true
-#   vscode: true
+dev_tools_enabled: true
+
+dev_tools:
+  chrome: true
+  direnv: true
+  gh: false
+  nvm: true
+  terraform: true
+  uv: true
+  vscode: true
 
 # ------------------------------------------------------------------------------
 # User Apps

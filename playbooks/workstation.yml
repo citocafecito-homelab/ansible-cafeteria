@@ -47,7 +47,7 @@
     - { role: nfs, when: nfs_enabled | default(false) | bool }
 
     # Development Tools
-    - { role: dev_tools }
+    - { role: dev_tools, when: dev_tools_enabled | default(false) | bool }
     - { role: vault, when: vault_enabled | default(false) | bool }
 
     # VM / Containers
