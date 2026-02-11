@@ -1,11 +1,28 @@
-- name: Add Vault Config to bashrc
+- name: Add Vault Config to /etc/bash.bashrc (for all users)
+  become: true
   ansible.builtin.blockinfile:
-    path: "{{ ansible_env.HOME }}/.bashrc"
+    path: /etc/bash.bashrc
     block: |
       export VAULT_ADDR="{{ vault_addr }}"
     marker: "# {mark} ANSIBLE VAULT BLOCK"
 
-- name: Set Vault token in default location
+- name: Set Vault token in a global location
+  become: true
+  ansible.builtin.copy:
+    dest: "/etc/vault-token"
+    content: "{{ vault_root_token }}"
+    mode: '0600'  # Asegúrate de que solo los usuarios autorizados tengan acceso
+
+- name: Add Vault Config to /etc/profile.d/vault.sh (for all users)
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/profile.d/vault.sh
+    content: |
+      export VAULT_ADDR="{{ vault_addr }}"
+    mode: '0755'
+
+# Si prefieres tener el .vault-token por usuario en sus directorios home, usa esto:
+- name: Set Vault token in default location for each user
   ansible.builtin.copy:
     dest: "{{ ansible_env.HOME }}/.vault-token"
     content: "{{ vault_root_token }}"
