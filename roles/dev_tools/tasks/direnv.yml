@@ -9,9 +9,9 @@
   ansible.builtin.command:
     cmd: /tmp/install_direnv.sh
     # creates: "{{ ansible_env.HOME }}/.local/bin/uv"
-    environment:
-      bin_path: "{{ ansible_env.HOME }}/.local/bin"
-      PATH: "{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+  environment:
+    bin_path: "{{ ansible_env.HOME }}/.local/bin"
+    PATH: "{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
 
 - name: Add Direnv completions to bashrc
   ansible.builtin.blockinfile:

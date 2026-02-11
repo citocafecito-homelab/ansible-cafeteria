@@ -42,6 +42,7 @@
       when: ansible_distribution_release in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
 
 - name: Install Google Chrome
+  become: true
   ansible.builtin.package:
     name: google-chrome-stable
     state: present
