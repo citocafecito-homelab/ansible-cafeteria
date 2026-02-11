@@ -70,7 +70,7 @@
     - { role: intel_graphics, when: graphics is defined and graphics == "intel" }
 
     # NFS (Network File System)
-    # - { role: nfs, when: nfs_enabled | default(false) | bool }
+    - { role: nfs, when: nfs_enabled | default(false) | bool }
 
     # Bond Multi Ethernet
     - { role: bond, when: bond_enabled | default(false) | bool }
