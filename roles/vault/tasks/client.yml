@@ -20,13 +20,3 @@
     content: |
       export VAULT_ADDR="{{ vault_addr }}"
     mode: '0755'
-
-# Si prefieres tener el .vault-token por usuario en sus directorios home, usa esto:
-- name: Set Vault token in default location for each user
-  ansible.builtin.copy:
-    dest: "{{ ansible_env.HOME }}/.vault-token"
-    content: "{{ vault_root_token }}"
-    owner: "{{ ansible_user_id }}"
-    group: "{{ ansible_user_gid | default(ansible_user_id) }}"
-    mode: '0600'
-  when: vault_root_token is defined
