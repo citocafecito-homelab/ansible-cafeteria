@@ -1,13 +1,22 @@
+- name: Set Facts
+  ansible.builtin.set_fact:
+    install_dir: /tmp/install_direnv.sh
+
 - name: Download Direnv installation script
+  register: install_result
   ansible.builtin.get_url:
     url: https://direnv.net/install.sh
-    dest: /tmp/install_direnv.sh
+    dest: "{{ install_dir }}"
     mode: "0755"
     force: false
     
+- name: Display Install Result
+  debug:
+    var: install_result
+
 - name: Install Direnv
   ansible.builtin.command:
-    cmd: /tmp/install_direnv.sh
+    cmd: "{{ install_dir }}"
   environment:
     bin_path: "{{ install_bin_path }}"
 
@@ -27,3 +36,8 @@
       #!/bin/bash
       eval "$(direnv hook bash)"
     mode: '0755'
+
+- name: Delete Temporal Install
+  ansible.builtin.file:
+    path: "{{ install_dir }}"
+    state: absent
