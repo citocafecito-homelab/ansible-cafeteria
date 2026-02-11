@@ -9,11 +9,23 @@
   ansible.builtin.command:
     cmd: /tmp/install_nvm.sh
     creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+  environment:
+    XDG_CONFIG_HOME: "{{ install_bin_path }}"
 
-- name: Add NVM initialization to bashrc
+- name: Add NVM initialization to /etc/bash.bashrc (for all users)
+  become: true
   ansible.builtin.blockinfile:
-    path: "{{ ansible_env.HOME }}/.bashrc"
+    path: /etc/bash.bashrc
     block: |
       export NVM_DIR="$HOME/.nvm"
       [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
     marker: "# {mark} ANSIBLE NVM BLOCK"
+
+- name: Add NVM initialization to /etc/profile.d/nvm.sh (for all users)
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/profile.d/nvm.sh
+    content: |
+      export NVM_DIR="$HOME/.nvm"
+      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    mode: '0755'

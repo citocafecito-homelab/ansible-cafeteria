@@ -4,18 +4,26 @@
     dest: /tmp/install_direnv.sh
     mode: "0755"
     force: false
-
+    
 - name: Install Direnv
   ansible.builtin.command:
     cmd: /tmp/install_direnv.sh
-    # creates: "{{ ansible_env.HOME }}/.local/bin/uv"
   environment:
-    bin_path: "{{ ansible_env.HOME }}/.local/bin"
-    PATH: "{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+    bin_path: "{{ install_bin_path }}"
 
-- name: Add Direnv completions to bashrc
-  ansible.builtin.blockinfile:
-    path: "{{ ansible_env.HOME }}/.bashrc"
-    block: |
+- name: Add Direnv completions to /etc/bash.bashrc (for all users)
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/bash.bashrc
+    line: 'eval "$(direnv hook bash)"'
+    state: present
+    create: yes
+
+- name: Add Direnv completions to /etc/profile.d/direnv.sh (for all users)
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/profile.d/direnv.sh
+    content: |
+      #!/bin/bash
       eval "$(direnv hook bash)"
-    marker: "# {mark} ANSIBLE DIRENV COMPLETIONS BLOCK"
+    mode: '0755'

@@ -29,11 +29,10 @@
         gpgkey: https://cli.github.com/packages/rpm/gpg
 
     - name: Install GitHub CLI on OSTree Variants
-      become: true
+      when: ansible_distribution_release in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
       community.general.rpm_ostree_pkg:
         name: gh
         state: present
-      when: ansible_distribution_release in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
 
 - name: Install GitHub CLI Package
   when: ansible_distribution_release not in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']

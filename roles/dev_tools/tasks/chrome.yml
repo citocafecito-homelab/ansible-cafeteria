@@ -13,7 +13,6 @@
       ansible.builtin.shell:
         cmd: "curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /etc/apt/keyrings/google-chrome.gpg"
         creates: /etc/apt/keyrings/google-chrome.gpg
-      when: ansible_os_family == "Debian"
 
     - name: Add Google Chrome repository (Debian)
       become: true
@@ -35,11 +34,11 @@
         gpgcheck: true
         gpgkey: https://dl.google.com/linux/linux_signing_key.pub
 
-    - name: Install Google Chrome on OSTree Variants (CoreOS/Silverblue)
+    - name: Install Google Chrome on OSTree Variants
+      when: ansible_distribution_release in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
       community.general.rpm_ostree_pkg:
         name: google-chrome-stable
         state: present
-      when: ansible_distribution_release in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
 
 - name: Install Google Chrome
   become: true

@@ -14,14 +14,24 @@
 - name: Install Universal Virtualenv (UV)
   ansible.builtin.command:
     cmd: /tmp/install_uv.sh
-    # creates: "{{ ansible_env.HOME }}/.local/bin/uv"
-    # environment:
-    #   bin_path: "{{ ansible_env.HOME }}/.local/bin"
-    #   PATH: "{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
+  environment:
+    HOME: "{{ install_bin_path }}"
+    PATH: "/usr/local/bin:{{ install_bin_path }}"
 
-- name: Add UV completion to bashrc
+- name: Add UV completion to /etc/bash.bashrc (for all users)
+  become: true
   ansible.builtin.blockinfile:
-    path: "{{ ansible_env.HOME }}/.bashrc"
+    path: /etc/bash.bashrc
     block: |
+      # Universal Virtualenv (UV) completion
       eval "$(uv generate-shell-completion bash)"
     marker: "# {mark} ANSIBLE UV COMPLETION BLOCK"
+
+- name: Add UV completion to /etc/profile.d/uv.sh (for all users)
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/profile.d/uv.sh
+    content: |
+      #!/bin/bash
+      eval "$(uv generate-shell-completion bash)"
+    mode: '0755'

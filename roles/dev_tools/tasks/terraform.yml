@@ -33,13 +33,14 @@
         gpgkey: https://packages.opentofu.org/opentofu/tofu/gpgkey
         repo_gpgcheck: true
 
-    - name: Install OpenTofu on OSTree Variants (CoreOS/Silverblue)
+    - name: Install OpenTofu on OSTree Variants
+      when: ansible_distribution_release in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
       community.general.rpm_ostree_pkg:
         name: opentofu
         state: present
-      when: ansible_distribution_release in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
 
 - name: Install OpenTofu
+  become: true
   ansible.builtin.package:
     name: "{{ 'tofu' if ansible_os_family == 'Debian' else 'opentofu' }}"
     state: present
