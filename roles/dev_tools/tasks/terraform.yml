@@ -7,7 +7,7 @@
 
 - name: Install OpenTofu
   ansible.builtin.command:
-    cmd: /tmp/install_opentofu.sh
+    cmd: /tmp/install_opentofu.sh --install-method standalone
     creates: "{{ install_bin_path }}/opentofu"
   environment:
     INSTALL_PATH: "{{ install_bin_path }}"
