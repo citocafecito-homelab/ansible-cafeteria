@@ -2,6 +2,11 @@
   ansible.builtin.set_fact:
     install_bin_path: "{{ '/home/linuxbrew/.linuxbrew/bin' if ansible_distribution_release in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue'] else ansible_env.HOME + '/.local/bin' }}"
 
+- name: Ensure Bin Path Exists
+  ansible.builtin.file:
+    path: "{{ install_bin_path }}"
+    state: directory 
+
 - name: Chrome
   ansible.builtin.include_tasks: chrome.yml
   when: dev_tools_enabled.chrome | bool | default(true)
