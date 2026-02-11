@@ -36,7 +36,9 @@
         state: present
         update_cache: true
       when: ansible_os_family == "Debian"
-
+    
+    # TODO
+    # ujust bazzite-cli 
   tasks: []
 
   roles:

@@ -20,7 +20,7 @@
   when: ansible_os_family == "RedHat"
   block:
     - name: Add GitHub CLI Repository
-      when: ansible_distribution not in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
+      when: ansible_distribution_release not in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
       ansible.builtin.yum_repository:
         name: gh-cli
         description: GitHub CLI

@@ -1,6 +1,6 @@
 - name: Install Dependencies
   become: true
-  when: ansible_distribution not in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
+  when: ansible_distribution_release not in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
   ansible.builtin.package:
     name:
       - mpv
@@ -9,7 +9,7 @@
 
 - name: Install Dependencies (Atomic Mode)
   become: true
-  when: ansible_distribution in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
+  when: ansible_distribution_release in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
   community.general.rpm_ostree_pkg:
     name:
       - mpv
