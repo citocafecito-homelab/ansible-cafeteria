@@ -22,7 +22,7 @@
     - name: Print OS Information
       ansible.builtin.debug:
         msg:
-          - "Distro: {{ ansible_distribution }}"
+          - "Distro: {{ ansible_distribution_release }}"
           - "Version: {{ ansible_distribution_version }}"
           - "Codename: {{ ansible_distribution_release }}"
 
