@@ -60,9 +60,6 @@
     #         - hybrid-sleep.target
 
   roles:
-    # Apps Cluster
-    - { role: k8s, when: k8s_enabled | default(false) | bool }
-
     # Bluetooth
     - { role: bluetooth, when: bluetooth_enabled | default(false) | bool }
 
@@ -71,6 +68,9 @@
 
     # NFS (Network File System)
     - { role: nfs, when: nfs_enabled | default(false) | bool }
+
+    # Apps Cluster
+    - { role: k8s, when: k8s_enabled | default(false) | bool }
 
     # Bond Multi Ethernet
     - { role: bond, when: bond_enabled | default(false) | bool }
