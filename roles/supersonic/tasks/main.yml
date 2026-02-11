@@ -10,7 +10,7 @@
 - name: Install Dependencies (Atomic Mode)
   become: true
   when: ansible_distribution in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
-  ansible.builtin.rpm_ostree_pkg:
+  community.general.rpm_ostree_pkg:
     name:
       - mpv
       - mpv-libs

@@ -37,19 +37,7 @@
         update_cache: true
       when: ansible_os_family == "Debian"
 
-  tasks:
-    - name: Install dependencies conditionally
-      become: true
-      ansible.builtin.package:
-        name: "{{ item.pkg }}"
-        state: present
-      loop:
-        - { pkg: kubectl, enabled: "{{ k8s_enabled | default(false) }}" }
-        - { pkg: curl, enabled: true }
-        - { pkg: git, enabled: true }
-      when: item.enabled
-      loop_control:
-        label: "{{ item.pkg }}"
+  tasks: []
 
   roles:
     # System
