@@ -5,24 +5,22 @@
     state: present
   when: ansible_os_family == "Debian"
 
-- name: Install bluez on Fedora/RHEL (Traditional)
-  become: true
-  ansible.builtin.dnf:
-    name: [bluez, bluez-tools]
-    state: present
-    use_backend: dnf5
-  when: 
-    - ansible_os_family == "RedHat"
-    - ansible_distribution not in ['coreos', 'silverblue', 'kinoite']
+- name: Install Bluez on RedHat Family
+  when: ansible_os_family == "RedHat"
+  block:
+    - name: Install bluez on Fedora/RHEL (Traditional)
+      become: true
+      ansible.builtin.dnf:
+        name: [bluez, bluez-tools]
+        state: present
+      when: ansible_distribution not in ['coreos', 'silverblue', 'kinoite']
 
-- name: Install bluez on OSTree variants (CoreOS/Silverblue)
-  become: true
-  community.general.rpm_ostree_pkg:
-    name: [bluez, bluez-tools]
-    state: present
-  when: 
-    - ansible_os_family == "RedHat"
-    - ansible_distribution in ['coreos', 'silverblue', 'kinoite']
+    - name: Install bluez on OSTree variants (CoreOS/Silverblue)
+      become: true
+      community.general.rpm_ostree_pkg:
+        name: [bluez, bluez-tools]
+        state: present
+      when:  ansible_distribution in ['coreos', 'silverblue', 'kinoite']
 
 - name: Ensure /etc/bluetooth directory exists with correct permissions
   become: true

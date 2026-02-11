@@ -1,51 +1,52 @@
-- name: Create keyring directory
+- name: Setup Chrome on Debian OS Family
   become: true
-  ansible.builtin.file:
-    path: /etc/apt/keyrings
-    state: directory
-    mode: '0755'
   when: ansible_os_family == "Debian"
+  block:
+    - name: Create keyring directory
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
 
-- name: Add Google Chrome GPG Key (Debian)
-  become: true
-  ansible.builtin.shell:
-    cmd: "curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /etc/apt/keyrings/google-chrome.gpg"
-    creates: /etc/apt/keyrings/google-chrome.gpg
-  when: ansible_os_family == "Debian"
+    - name: Add Google Chrome GPG Key (Debian)
+      become: true
+      ansible.builtin.shell:
+        cmd: "curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /etc/apt/keyrings/google-chrome.gpg"
+        creates: /etc/apt/keyrings/google-chrome.gpg
+      when: ansible_os_family == "Debian"
 
-- name: Add Google Chrome repository (Debian)
-  become: true
-  ansible.builtin.apt_repository:
-    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main"
-    state: present
-    filename: google-chrome.list
-  when: ansible_os_family == "Debian"
+    - name: Add Google Chrome repository (Debian)
+      become: true
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main"
+        state: present
+        filename: google-chrome.list
 
-- name: Add Google Chrome repository (RedHat/CoreOS)
+
+- name: Setup Chrome on RedHat OS Family
   become: true
-  ansible.builtin.yum_repository:
-    name: google-chrome
-    description: Google Chrome
-    baseurl: http://dl.google.com/linux/chrome/rpm/stable/x86_64
-    enabled: true
-    gpgcheck: true
-    gpgkey: https://dl.google.com/linux/linux_signing_key.pub
   when: ansible_os_family == "RedHat"
+  block:
+    - name: Add Google Chrome repository (RedHat/CoreOS)
+      become: true
+      ansible.builtin.yum_repository:
+        name: google-chrome
+        description: Google Chrome
+        baseurl: http://dl.google.com/linux/chrome/rpm/stable/x86_64
+        enabled: true
+        gpgcheck: true
+        gpgkey: https://dl.google.com/linux/linux_signing_key.pub
 
-- name: Install Google Chrome on Traditional Systems
-  become: true
-  ansible.builtin.package:
-    name: google-chrome-stable
-    state: present
-  when: 
-    - ansible_os_family != "RedHat" or (ansible_os_family == "RedHat" and ansible_distribution not in ['coreos', 'silverblue', 'kinoite'])
-    - ansible_os_family == "Debian" or ansible_os_family == "RedHat"
+    - name: Install Google Chrome on Traditional Systems
+      become: true
+      ansible.builtin.dnf:
+        name: google-chrome-stable
+        state: present
+      when: ansible_distribution not in ['bazzite', 'coreos', 'fedora', 'kinoite', 'silverblue']
 
-- name: Install Google Chrome on OSTree Variants (CoreOS/Silverblue)
-  become: true
-  community.general.rpm_ostree_pkg:
-    name: google-chrome-stable
-    state: present
-  when: 
-    - ansible_os_family == "RedHat"
-    - ansible_distribution in ['coreos', 'silverblue', 'kinoite']
+    - name: Install Google Chrome on OSTree Variants (CoreOS/Silverblue)
+      become: true
+      community.general.rpm_ostree_pkg:
+        name: google-chrome-stable
+        state: present
+      when: ansible_distribution in ['bazzite', 'coreos', 'kinoite', 'silverblue']
