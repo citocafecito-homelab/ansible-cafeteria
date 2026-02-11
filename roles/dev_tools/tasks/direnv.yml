@@ -11,10 +11,9 @@
 - name: Install Direnv
   ansible.builtin.command:
     cmd: "{{ install_dir }}"
+    creates: "{{ install_bin_path }}/direnv"
   environment:
     bin_path: "{{ install_bin_path }}"
-  register: install_result
-  ignore_errors: yes
 
 - name: Mostrar resultado de la instalación de Direnv
   debug:

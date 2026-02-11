@@ -27,6 +27,7 @@
         enabled: true
         gpgcheck: true
         gpgkey: https://cli.github.com/packages/rpm/gpg
+      when: ansible_distribution not in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
 
     - name: Install GitHub CLI on OSTree Variants
       when: ansible_distribution_release in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
