@@ -1,16 +1,24 @@
 # kubectl taint nodes --all node-role.kubernetes.io/control-plane- || true
 
-- name: Install Remote Core Apps
-  kubernetes.core.k8s:
-    src: "{{ item }}"
-  with_items: "{{ k8s_manifests }}"
+# - name: Install Kubernetes Python client
+#   become: true
+#   ansible.builtin.pip:
+#     name: kubernetes
+#     state: present
+#     break_system_packages: true
+#     executable: pip3
 
-- name: Taint Update
-  kubernetes.core.k8s_taint:
-    name: "{{ ansible_nodename | lower }}"
-    taints:
-      - key: node-role.kubernetes.io/control-plane
-        effect: NoSchedule
-        state: absent
-  when: k8s_taint | bool
-  changed_when: true
+# - name: Install Remote Core Apps
+#   kubernetes.core.k8s:
+#     src: "{{ item }}"
+#   with_items: "{{ k8s_manifests }}"
+
+# - name: Taint Update
+#   kubernetes.core.k8s_taint:
+#     name: "{{ ansible_nodename | lower }}"
+#     taints:
+#       - key: node-role.kubernetes.io/control-plane
+#         effect: NoSchedule
+#         state: absent
+#   when: k8s_taint | bool
+#   changed_when: true
