@@ -36,8 +36,3 @@
       #!/bin/bash
       eval "$(direnv hook bash)"
     mode: '0755'
-
-- name: Delete Temporal Install
-  ansible.builtin.file:
-    path: "{{ install_dir }}"
-    state: absent
