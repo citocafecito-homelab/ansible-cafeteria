@@ -6,10 +6,9 @@
     force: false
 
 - name: Install Universal Virtualenv (UV)
-  become: true
   ansible.builtin.command:
     cmd: /tmp/install_uv.sh
-    creates: /usr/local/bin/uv
+    # creates: "{{ ansible_env.HOME }}/.local/bin/uv"
 
 - name: Add UV completion to bashrc
   ansible.builtin.blockinfile:

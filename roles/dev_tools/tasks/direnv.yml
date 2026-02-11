@@ -1,5 +1,4 @@
 - name: Download Direnv installation script
-  become: true
   ansible.builtin.get_url:
     url: https://direnv.net/install.sh
     dest: /tmp/install_direnv.sh

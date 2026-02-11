@@ -1,4 +1,4 @@
-- name: Add OpenTofu Repository (Debian)
+- name: Open Tofu Setup on Debian Family
   become: true
   when: ansible_os_family == "Debian"
   block:
@@ -19,42 +19,45 @@
         filename: opentofu
         state: present
 
-- name: Add OpenTofu Repository (RedHat/CoreOS)
+- name: Open Tofu Setup on RedHat Family
   become: true
-  ansible.builtin.yum_repository:
-    name: opentofu
-    description: OpenTofu Repository
-    baseurl: https://packages.opentofu.org/opentofu/tofu/rpm_any/rpm_any/$basearch
-    enabled: true
-    gpgcheck: true
-    gpgkey: https://packages.opentofu.org/opentofu/tofu/gpgkey
-    repo_gpgcheck: true
   when: ansible_os_family == "RedHat"
+  block:
+    - name: Add OpenTofu Repository (RedHat/CoreOS)
+      ansible.builtin.yum_repository:
+        name: opentofu
+        description: OpenTofu Repository
+        baseurl: https://packages.opentofu.org/opentofu/tofu/rpm_any/rpm_any/$basearch
+        enabled: true
+        gpgcheck: true
+        gpgkey: https://packages.opentofu.org/opentofu/tofu/gpgkey
+        repo_gpgcheck: true
 
-- name: Install OpenTofu on Traditional Systems
-  become: true
-  ansible.builtin.package:
-    name: "{{ 'tofu' if ansible_os_family == 'Debian' else 'opentofu' }}"
-    state: present
-  when: 
-    - ansible_os_family == "Debian" or (ansible_os_family == "RedHat" and ansible_facts.ansible_distribution_release | default('') not in ['Coreos', 'Silverblue', 'Kinoite'])
 
-- name: Install OpenTofu on OSTree Variants (CoreOS/Silverblue)
-  become: true
-  community.general.rpm_ostree_pkg:
-    name: opentofu
-    state: present
-  when: 
-    - ansible_os_family == "RedHat"
-    - ansible_facts.ansible_distribution_release | default('') in ['Coreos', 'Silverblue', 'Kinoite']
+# - name: Install OpenTofu on Traditional Systems
+#   become: true
+#   ansible.builtin.package:
+#     name: "{{ 'tofu' if ansible_os_family == 'Debian' else 'opentofu' }}"
+#     state: present
+#   when: 
+#     - ansible_os_family == "Debian" or (ansible_os_family == "RedHat" and ansible_facts.ansible_distribution_release | default('') not in ['Coreos', 'Silverblue', 'Kinoite'])
 
-- name: Create terraform alias for OpenTofu
-  become: true
-  ansible.builtin.copy:
-    dest: /etc/profile.d/terraform.sh
-    content: |
-      # OpenTofu compatibility alias
-      command -v tofu >/dev/null 2>&1 && alias terraform=tofu
-    owner: root
-    group: root
-    mode: '0644'
+# - name: Install OpenTofu on OSTree Variants (CoreOS/Silverblue)
+#   become: true
+#   community.general.rpm_ostree_pkg:
+#     name: opentofu
+#     state: present
+#   when: 
+#     - ansible_os_family == "RedHat"
+#     - ansible_facts.ansible_distribution_release | default('') in ['Coreos', 'Silverblue', 'Kinoite']
+
+# - name: Create terraform alias for OpenTofu
+#   become: true
+#   ansible.builtin.copy:
+#     dest: /etc/profile.d/terraform.sh
+#     content: |
+#       # OpenTofu compatibility alias
+#       command -v tofu >/dev/null 2>&1 && alias terraform=tofu
+#     owner: root
+#     group: root
+#     mode: '0644'

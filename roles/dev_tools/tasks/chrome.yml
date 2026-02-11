@@ -27,7 +27,6 @@
   when: ansible_os_family == "RedHat"
   block:
     - name: Add Google Chrome repository (RedHat/CoreOS)
-      become: true
       ansible.builtin.yum_repository:
         name: google-chrome
         description: Google Chrome
@@ -36,16 +35,14 @@
         gpgcheck: true
         gpgkey: https://dl.google.com/linux/linux_signing_key.pub
 
-    - name: Install Google Chrome on RedHat Tradicional Systems
-      become: true
-      ansible.builtin.dnf:
-        name: google-chrome-stable
-        state: present
-      when: ansible_distribution_release not in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
-
     - name: Install Google Chrome on OSTree Variants (CoreOS/Silverblue)
-      become: true
       community.general.rpm_ostree_pkg:
         name: google-chrome-stable
         state: present
       when: ansible_distribution_release in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
+
+- name: Install Google Chrome
+  ansible.builtin.package:
+    name: google-chrome-stable
+    state: present
+  when: ansible_distribution_release not in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
