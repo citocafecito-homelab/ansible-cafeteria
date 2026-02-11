@@ -1,49 +1,53 @@
-- name: Add GitHub CLI GPG Key (Debian)
+- name: Setup GH CLI on Debian Family
   become: true
-  ansible.builtin.shell:
-    cmd: "curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | gpg --dearmor -o /etc/apt/keyrings/github-cli.gpg"
-    creates: /etc/apt/keyrings/github-cli.gpg
   when: ansible_os_family == "Debian"
+  block:
+    - name: Add GitHub CLI GPG Key
+      become: true
+      ansible.builtin.shell:
+        cmd: "curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | gpg --dearmor -o /etc/apt/keyrings/github-cli.gpg"
+        creates: /etc/apt/keyrings/github-cli.gpg
 
-- name: Add GitHub CLI Repository (Debian)
-  become: true
-  ansible.builtin.apt_repository:
-    repo: "deb [arch={{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }} signed-by=/etc/apt/keyrings/github-cli.gpg] https://cli.github.com/packages stable main"
-    state: present
-    filename: github-cli.list
-  when: ansible_os_family == "Debian"
+    - name: Add GitHub CLI Repository
+      become: true
+      ansible.builtin.apt_repository:
+        repo: "deb [arch={{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }} signed-by=/etc/apt/keyrings/github-cli.gpg] https://cli.github.com/packages stable main"
+        state: present
+        filename: github-cli.list
 
-- name: Add GitHub CLI Repository (RedHat/CoreOS)
+- name: Setup GH CLI on RedHat Family
   become: true
-  ansible.builtin.yum_repository:
-    name: gh-cli
-    description: GitHub CLI
-    baseurl: https://cli.github.com/packages/rpm
-    enabled: true
-    gpgcheck: true
-    gpgkey: https://cli.github.com/packages/rpm/gpg
   when: ansible_os_family == "RedHat"
+  block:
+    - name: Add GitHub CLI Repository
+      ansible.builtin.yum_repository:
+        name: gh-cli
+        description: GitHub CLI
+        baseurl: https://cli.github.com/packages/rpm
+        enabled: true
+        gpgcheck: true
+        gpgkey: https://cli.github.com/packages/rpm/gpg
 
-- name: Install GitHub CLI on Traditional Systems
-  become: true
+    - name: Install GitHub CLI on OSTree Variants
+      become: true
+      community.general.rpm_ostree_pkg:
+        name: gh
+        state: present
+      when: ansible_distribution_release in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
+
+- name: Install GitHub CLI Package
+  when: ansible_distribution_release not in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
   ansible.builtin.package:
     name: gh
     state: present
-  when: 
-    - ansible_os_family == "Debian" or (ansible_os_family == "RedHat" and ansible_facts.ansible_distribution_release | default('') not in ['Coreos', 'Silverblue', 'Kinoite'])
 
-- name: Install GitHub CLI on OSTree Variants (CoreOS/Silverblue)
-  become: true
-  community.general.rpm_ostree_pkg:
-    name: gh
-    state: present
-  when: 
-    - ansible_os_family == "RedHat"
-    - ansible_facts.ansible_distribution_release | default('') in ['Coreos', 'Silverblue', 'Kinoite']
-
-- name: Check GH CLI Authentication
+- name: Check GH CLI
   register: gh_auth_check
   changed_when: false
   failed_when: false
   ansible.builtin.command:
     cmd: gh auth status
+
+- name: Debug GH Status
+  ansible.builtin.debug:
+    var: gh_auth_check

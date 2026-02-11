@@ -22,7 +22,6 @@
         state: present
         filename: google-chrome.list
 
-
 - name: Setup Chrome on RedHat Family
   become: true
   when: ansible_os_family == "RedHat"
