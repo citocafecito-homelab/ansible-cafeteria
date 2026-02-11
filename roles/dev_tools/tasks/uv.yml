@@ -12,6 +12,7 @@
 #     mode: "0755"
 
 - name: Install Universal Virtualenv (UV)
+  become: true
   ansible.builtin.command:
     cmd: /tmp/install_uv.sh
     creates: "{{ install_bin_path }}/bin/uv"
