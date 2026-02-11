@@ -20,6 +20,7 @@
   when: ansible_os_family == "RedHat"
   block:
     - name: Add GitHub CLI Repository
+      when: ansible_distribution not in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
       ansible.builtin.yum_repository:
         name: gh-cli
         description: GitHub CLI
@@ -27,8 +28,6 @@
         enabled: true
         gpgcheck: true
         gpgkey: https://cli.github.com/packages/rpm/gpg
-      when: ansible_distribution not in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
-
     - name: Install GitHub CLI on OSTree Variants
       when: ansible_distribution_release in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
       community.general.rpm_ostree_pkg:
