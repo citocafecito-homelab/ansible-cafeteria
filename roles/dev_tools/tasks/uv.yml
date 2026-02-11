@@ -3,7 +3,13 @@
     url: https://astral.sh/uv/install.sh
     dest: /tmp/install_uv.sh
     mode: "0755"
-    force: false
+    force: false 
+
+- name: Ensure Bin Path Exists
+  ansible.builtin.file:
+    path: "{{ install_bin_path }}/bin/uv"
+    state: directory
+    mode: "0755"
 
 - name: Install Universal Virtualenv (UV)
   ansible.builtin.command:
