@@ -19,7 +19,7 @@
   - name: Install NFS client RedHat OSTree Variants (CoreOS/Silverblue)
     become: true
     community.general.rpm_ostree_pkg:
-      name: nfs-utils-Coreos
+      name: nfs-utils
       state: present
     when: ansible_distribution_release in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
 
