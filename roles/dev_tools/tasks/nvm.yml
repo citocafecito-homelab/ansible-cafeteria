@@ -9,8 +9,8 @@
   ansible.builtin.command:
     cmd: /tmp/install_nvm.sh
     creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
-  environment:
-    XDG_CONFIG_HOME: "{{ install_bin_path }}"
+  # environment:
+  #   XDG_CONFIG_HOME: "{{ install_bin_path }}"
 
 - name: Add NVM initialization to /etc/bash.bashrc (for all users)
   become: true

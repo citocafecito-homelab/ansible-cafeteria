@@ -8,8 +8,8 @@
 - name: Install Direnv
   ansible.builtin.command:
     cmd: /tmp/install_direnv.sh
-  environment:
-    bin_path: "{{ install_bin_path }}"
+  # environment:
+  #   bin_path: "{{ install_bin_path }}"
 
 - name: Add Direnv completions to /etc/bash.bashrc (for all users)
   become: true

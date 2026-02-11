@@ -5,18 +5,12 @@
     mode: "0755"
     force: false
 
-- name: Create .local/bin directory
-  ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.local/bin"
-    state: directory
-    mode: '0755'
-
 - name: Install Universal Virtualenv (UV)
   ansible.builtin.command:
     cmd: /tmp/install_uv.sh
-  environment:
-    HOME: "{{ install_bin_path }}"
-    PATH: "/usr/local/bin:{{ install_bin_path }}"
+  # environment:
+  #   HOME: "{{ install_bin_path }}"
+  #   PATH: "/usr/local/bin:{{ install_bin_path }}"
 
 - name: Add UV completion to /etc/bash.bashrc (for all users)
   become: true
