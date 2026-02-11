@@ -15,10 +15,6 @@
   environment:
     bin_path: "{{ install_bin_path }}"
 
-- name: Mostrar resultado de la instalación de Direnv
-  debug:
-    var: install_result
-
 - name: Add Direnv completions to /etc/bash.bashrc (for all users)
   become: true
   ansible.builtin.lineinfile:

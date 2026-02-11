@@ -9,7 +9,7 @@
   ansible.builtin.command:
     cmd: /tmp/install_uv.sh
   environment:
-    HOME: "{{ install_bin_path }}"
+    XDG_BIN_HOME: "{{ install_bin_path }}"
   #   PATH: "/usr/local/bin:{{ install_bin_path }}"
 
 - name: Add UV completion to /etc/bash.bashrc (for all users)
