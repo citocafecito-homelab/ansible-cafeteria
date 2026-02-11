@@ -5,7 +5,9 @@
 - name: Ensure Bin Path Exists
   ansible.builtin.file:
     path: "{{ install_bin_path }}"
-    state: directory 
+    state: directory
+    mode: "0755"
+    recurse: yes
 
 - name: Chrome
   ansible.builtin.include_tasks: chrome.yml
