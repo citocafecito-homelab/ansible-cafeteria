@@ -5,18 +5,18 @@
     mode: "0755"
     force: false 
 
-- name: Ensure Bin Path Exists
-  ansible.builtin.file:
-    path: "{{ install_bin_path }}/bin/uv"
-    state: directory
-    mode: "0755"
+# - name: Ensure Bin Path Exists
+#   ansible.builtin.file:
+#     path: "{{ install_bin_path }}/uv"
+#     state: directory
+#     mode: "0755"
 
 - name: Install Universal Virtualenv (UV)
   ansible.builtin.command:
     cmd: /tmp/install_uv.sh
+    creates: "{{ install_bin_path }}/bin/uv"
   environment:
     XDG_BIN_HOME: "{{ install_bin_path }}"
-  #   PATH: "/usr/local/bin:{{ install_bin_path }}"
 
 - name: Add UV completion to /etc/bash.bashrc (for all users)
   become: true
