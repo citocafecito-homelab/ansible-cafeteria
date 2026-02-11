@@ -16,7 +16,7 @@
     - name: Add OpenTofu APT repository
       ansible.builtin.apt_repository:
         repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/opentofu-repo.gpg] https://packages.opentofu.org/opentofu/tofu/any/ any main"
-        filename: opentofu
+        filename: opentofu.list
         state: present
 
 - name: Open Tofu Setup on RedHat Family
@@ -33,31 +33,25 @@
         gpgkey: https://packages.opentofu.org/opentofu/tofu/gpgkey
         repo_gpgcheck: true
 
+    - name: Install OpenTofu on OSTree Variants (CoreOS/Silverblue)
+      community.general.rpm_ostree_pkg:
+        name: opentofu
+        state: present
+      when: ansible_distribution_release in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
 
-# - name: Install OpenTofu on Traditional Systems
-#   become: true
-#   ansible.builtin.package:
-#     name: "{{ 'tofu' if ansible_os_family == 'Debian' else 'opentofu' }}"
-#     state: present
-#   when: 
-#     - ansible_os_family == "Debian" or (ansible_os_family == "RedHat" and ansible_facts.ansible_distribution_release | default('') not in ['Coreos', 'Silverblue', 'Kinoite'])
+- name: Install OpenTofu
+  ansible.builtin.package:
+    name: "{{ 'tofu' if ansible_os_family == 'Debian' else 'opentofu' }}"
+    state: present
+  when: ansible_distribution_release not in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
 
-# - name: Install OpenTofu on OSTree Variants (CoreOS/Silverblue)
-#   become: true
-#   community.general.rpm_ostree_pkg:
-#     name: opentofu
-#     state: present
-#   when: 
-#     - ansible_os_family == "RedHat"
-#     - ansible_facts.ansible_distribution_release | default('') in ['Coreos', 'Silverblue', 'Kinoite']
-
-# - name: Create terraform alias for OpenTofu
-#   become: true
-#   ansible.builtin.copy:
-#     dest: /etc/profile.d/terraform.sh
-#     content: |
-#       # OpenTofu compatibility alias
-#       command -v tofu >/dev/null 2>&1 && alias terraform=tofu
-#     owner: root
-#     group: root
-#     mode: '0644'
+- name: Create terraform alias for OpenTofu
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/profile.d/terraform.sh
+    content: |
+      # OpenTofu compatibility alias
+      command -v tofu >/dev/null 2>&1 && alias terraform=tofu
+    owner: root
+    group: root
+    mode: '0644'
