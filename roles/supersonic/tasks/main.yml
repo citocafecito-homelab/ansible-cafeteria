@@ -7,6 +7,15 @@
       - "{{ 'libmpv2' if ansible_os_family == 'Debian' else 'mpv-libs' }}"
     state: present
 
+- name: Install Dependencies (Atomic Mode)
+  become: true
+  when: ansible_distribution in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
+  ansible.builtin.rpm_ostree_pkg:
+    name:
+      - mpv
+      - mpv-libs
+    state: present
+
 - name: Get Latest Release Version
   ansible.builtin.uri:
     url: https://api.github.com/repos/dweymouth/supersonic/releases/latest
