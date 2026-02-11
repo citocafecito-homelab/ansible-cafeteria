@@ -13,14 +13,14 @@
       ansible.builtin.dnf:
         name: [bluez, bluez-tools]
         state: present
-      when: ansible_distribution not in ['coreos', 'silverblue', 'kinoite']
+      when: ansible_distribution not in ['Coreos', 'Silverblue', 'Kinoite']
 
     - name: Install bluez on OSTree variants (CoreOS/Silverblue)
       become: true
       community.general.rpm_ostree_pkg:
         name: [bluez, bluez-tools]
         state: present
-      when:  ansible_distribution in ['coreos', 'silverblue', 'kinoite']
+      when:  ansible_distribution in ['Coreos', 'Silverblue', 'Kinoite']
 
 - name: Ensure /etc/bluetooth directory exists with correct permissions
   become: true

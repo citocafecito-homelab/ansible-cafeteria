@@ -42,11 +42,11 @@
       ansible.builtin.dnf:
         name: google-chrome-stable
         state: present
-      when: ansible_distribution not in ['bazzite', 'coreos', 'kinoite', 'silverblue']
+      when: ansible_distribution not in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
 
     - name: Install Google Chrome on OSTree Variants (CoreOS/Silverblue)
       become: true
       community.general.rpm_ostree_pkg:
         name: google-chrome-stable
         state: present
-      when: ansible_distribution in ['bazzite', 'coreos', 'kinoite', 'silverblue']
+      when: ansible_distribution in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']

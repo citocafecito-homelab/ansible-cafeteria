@@ -14,14 +14,14 @@
     ansible.builtin.dnf:
       name: nfs-utils
       state: present
-    when: ansible_distribution not in ['bazzite', 'coreos', 'kinoite', 'silverblue']
+    when: ansible_distribution not in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
     
   - name: Install NFS client RedHat OSTree Variants (CoreOS/Silverblue)
     become: true
     community.general.rpm_ostree_pkg:
-      name: nfs-utils-coreos
+      name: nfs-utils-Coreos
       state: present
-    when: ansible_distribution in ['bazzite', 'coreos', 'kinoite', 'silverblue']
+    when: ansible_distribution in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
 
 - name: Ensure mount points exist
   become: true
