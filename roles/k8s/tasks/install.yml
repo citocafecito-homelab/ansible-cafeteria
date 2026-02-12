@@ -6,7 +6,6 @@
       - ca-certificates
       - curl
       - gpg
-      # - gnupg2
       - python3-pip
 
 - name: Instal Packages for {{ ansible_os_family }}
@@ -35,35 +34,42 @@
     cmd: "{{ package_hold_command[ansible_os_family] }} kubeadm kubelet containerd"
   changed_when: false
 
-- name: Ensure CNI bin directories exists
+- name: Ensure CNI bin directories exist
   become: true
   ansible.builtin.file:
-    path: "{{ item }}" 
+    path: "{{ item }}"
     state: directory
-    mode: '0755'
+    mode: "0755"
   loop:
     - /usr/lib/cni
     - /opt/cni/bin
 
-- name: Descargar CNI plugins al Runner
+- name: Download CNI plugins to Runner
   ansible.builtin.get_url:
     url: "https://github.com/containernetworking/plugins/releases/download/{{ k8s_cni_plugin_version }}/cni-plugins-linux-amd64-{{ k8s_cni_plugin_version }}.tgz"
     dest: "/tmp/cni-plugins-{{ k8s_cni_plugin_version }}.tgz"
     force: false
 
-- name: Distribuir y descompimir en los nodos
+- name: Distribute and unarchive CNI plugins to nodes
   become: true
   ansible.builtin.unarchive:
     src: "/tmp/cni-plugins-{{ k8s_cni_plugin_version }}.tgz"
     dest: /opt/cni/bin
     owner: root
     group: root
-    mode: '0755'
+    mode: "0755"
+    creates: /opt/cni/bin/bridge
 
-- name: Symlink CNI binaries from /opt/cni/bin to /usr/lib/cni
+- name: List CNI binaries for symlinking
+  ansible.builtin.find:
+    paths: /opt/cni/bin
+    file_type: file
+  register: cni_binaries
+
+- name: Symlink CNI binaries to /usr/lib/cni
+  become: true
   ansible.builtin.file:
-    src: "/opt/cni/bin/{{ item }}"
-    dest: "/usr/lib/cni/{{ item }}"
+    src: "{{ item.path }}"
+    dest: "/usr/lib/cni/{{ item.path | basename }}"
     state: link
-    force: false
-  loop: "{{ lookup('fileglob', '/opt/cni/bin/*', wantlist=True) }}"
+  loop: "{{ cni_binaries.files }}"
