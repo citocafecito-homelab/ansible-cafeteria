@@ -4,13 +4,13 @@ run-name: >-
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - "**/**.md"
-      - ".ansible-lint"
-      - "!playbooks/main.yml"
+  # push:
+  #   branches:
+  #     - main
+  #   paths-ignore:
+  #     - "**/**.md"
+  #     - ".ansible-lint"
+  #     - "!playbooks/main.yml"
 
 jobs:
   main:
