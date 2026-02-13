@@ -7,6 +7,7 @@
   when: nfs_client_enabled
 
 - name: Discover NFS client nodes
+  when: false
   ansible.builtin.set_fact:
     nfs_auto_clients: >-
       {{
@@ -21,6 +22,7 @@
 
 - name: Safe Mount NFS
   ansible.builtin.include_tasks: mount.yml
+  when: false
   vars:
     nfs_server: "{{ ansible_default_ipv4.address }}"
     nfs_mounts: "{{ nfs_exports }}"
