@@ -40,14 +40,3 @@
   ansible.builtin.package:
     name: gh
     state: present
-
-- name: Check GH CLI
-  register: gh_auth_check
-  changed_when: false
-  failed_when: false
-  ansible.builtin.command:
-    cmd: gh auth status
-
-- name: Debug GH Status
-  ansible.builtin.debug:
-    var: gh_auth_check
