@@ -5,25 +5,3 @@
 - name: NFS client
   ansible.builtin.import_tasks: client.yml
   when: nfs_client_enabled
-
-- name: Discover NFS client nodes
-  when: false
-  ansible.builtin.set_fact:
-    nfs_auto_clients: >-
-      {{
-        hostvars
-        | dict2items
-        | selectattr('value.nfs_client_enabled', 'defined')
-        | selectattr('value.nfs_client_enabled', 'equalto', true)
-        | map(attribute='key')
-        | reject('equalto', inventory_hostname)
-        | list
-      }}
-
-- name: Safe Mount NFS
-  ansible.builtin.include_tasks: mount.yml
-  when: false
-  vars:
-    nfs_server: "{{ ansible_default_ipv4.address }}"
-    nfs_mounts: "{{ nfs_exports }}"
-  loop: "{{ nfs_auto_clients }}"
