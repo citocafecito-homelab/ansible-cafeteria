@@ -17,6 +17,6 @@ nfs_exports:
 
   - path: /mnt/downloads
 
-  - path: /mnt/downloads
+  - path: /mnt/backups
 
 nfs_mounts: []
