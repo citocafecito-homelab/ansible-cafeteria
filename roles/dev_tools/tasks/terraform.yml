@@ -1,20 +1,29 @@
-- name: Download OpenTofu installation script
-  ansible.builtin.get_url:
-    url: https://get.opentofu.org/install-opentofu.sh
-    dest: /tmp/install_opentofu.sh
-    mode: "0755"
-    force: false
+- name: OpenTofu Setup
+  block:
+    - name: Install OpenTofu
+      become: true
+      ansible.builtin.package:
+        name: opentofu
+        state: present
+        update_cache: true
+  rescue:
+    - name: Download OpenTofu installation script
+      ansible.builtin.get_url:
+        url: https://get.opentofu.org/install-opentofu.sh
+        dest: /tmp/install_opentofu.sh
+        mode: "0755"
+        force: false
 
-- name: Install OpenTofu
-  ansible.builtin.command:
-    cmd: /tmp/install_opentofu.sh --install-method standalone
-    creates: "{{ install_bin_path }}/opentofu"
-  environment:
-    INSTALL_PATH: "{{ install_bin_path }}"
+    - name: Install OpenTofu
+      ansible.builtin.command:
+        cmd: /tmp/install_opentofu.sh --install-method standalone
+        creates: "{{ install_bin_path }}/opentofu"
+      environment:
+        INSTALL_PATH: "{{ install_bin_path }}"
 
-- name: Create terraform alias for OpenTofu
-  become: true
-  ansible.builtin.copy:
-    dest: /etc/profile.d/opentofu_alias.sh
-    content: "alias tofu='opentofu'"
-    mode: '0644'
+    - name: Create terraform alias for OpenTofu
+      become: true
+      ansible.builtin.copy:
+        dest: /etc/profile.d/opentofu_alias.sh
+        content: "alias tofu='opentofu'"
+        mode: '0644'
