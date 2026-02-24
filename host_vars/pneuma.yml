@@ -1,9 +1,9 @@
 # ------------------------------------------------------------------------------
 # System & Hardware
 # ------------------------------------------------------------------------------
-nfs_enabled: true
-nfs_server_enabled: true
-nfs_client_enabled: true
+nfs_enabled: false
+nfs_server_enabled: false
+nfs_client_enabled: false
 
 # ------------------------------------------------------------------------------
 # Secret Management
