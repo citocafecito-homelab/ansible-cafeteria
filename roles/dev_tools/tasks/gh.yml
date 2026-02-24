@@ -36,6 +36,7 @@
         state: present
 
 - name: Install GitHub CLI Package
+  become: true
   when: ansible_distribution_release not in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue']
   ansible.builtin.package:
     name: gh
