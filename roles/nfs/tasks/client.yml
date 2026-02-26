@@ -25,6 +25,7 @@
 
 - name: Ensure mount points exist
   become: true
+  failed_when: false
   ansible.builtin.file:
     path:  "{{ item.target | default(item.path) }}"
     state: directory
