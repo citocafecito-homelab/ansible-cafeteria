@@ -14,5 +14,7 @@ nfs_client_enabled: true
 
 nfs_exports:
   - path: /mnt/music
+  - path: /mnt/lidarr
 
-nfs_mounts: []
+nfs_mounts: 
+  - path: /mnt/downloads
