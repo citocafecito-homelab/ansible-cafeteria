@@ -14,9 +14,7 @@ nfs_client_enabled: true
 
 nfs_exports:
   - path: /mnt/multimedia2
-
   - path: /mnt/downloads
-
   - path: /mnt/backups
 
 nfs_mounts: []
