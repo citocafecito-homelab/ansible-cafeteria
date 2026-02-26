@@ -26,4 +26,10 @@ nfs_client_enabled: true
 
 nfs_exports: []
 
-nfs_mounts: []
+nfs_mounts: 
+  - path: /mnt/downloads
+    server: 192.168.1.12
+
+  - path: /mnt/backups
+    server: 192.168.1.12
+    options: "rw,_netdev,nofail,x-systemd.automount"

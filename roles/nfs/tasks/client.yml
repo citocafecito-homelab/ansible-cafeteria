@@ -32,12 +32,11 @@
   loop: "{{ nfs_mounts }}"
 
 - name: Mount NFS shares
-  # when: false
   become: true
   ansible.posix.mount:
-    src: "{{ nfs_server }}:{{ item.remote_path }}"
-    path: "{{ item.mount_path }}"
+    path: "{{ item.path }}"
+    src: "{{ item.server }}:{{ item.target | default(item.path) }}"
     fstype: nfs
-    opts: "{{ item.options }}"
+    opts: "{{ item.options | default('rw,_netdev') }}"
     state: mounted
-  loop: "{{ nfs_mounts }}"
+  loop: "{{ nfs_mounts | default([]) }}"

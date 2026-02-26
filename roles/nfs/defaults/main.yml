@@ -1,5 +1,104 @@
-nfs_server_enabled: false
-nfs_client_enabled: false
+# ==========================================================
+# NFS Role Configuration
+# ==========================================================
 
+---
+# ----------------------------------------------------------
+# Enable NFS Server
+# ----------------------------------------------------------
+# When set to true, the role installs and configures
+# the NFS server service and manages exports.
+#
+# Type: boolean
+# Default: false
+#
+nfs_server_enabled: false
+---
+
+# ----------------------------------------------------------
+# Enable NFS Client
+# ----------------------------------------------------------
+# When set to true, the role installs the required NFS
+# client packages and manages NFS mounts.
+#
+# Type: boolean
+# Default: false
+#
+nfs_client_enabled: false
+---
+
+# ----------------------------------------------------------
+# NFS Exports Configuration (Server Side)
+# ----------------------------------------------------------
+# Defines exported directories when nfs_server_enabled is true.
+#
+# Variable: nfs_exports
+#
+# Type:
+#   list of dictionaries
+#
+# Required keys per item:
+#   - path    (string): Directory on the server to export
+#   - clients (string): Allowed client networks/hosts with options
+#
+# Optional keys:
+#   - options (string): Default export options (if not included in clients)
+#
+# Notes:
+#   - Exports are written to /etc/exports
+#   - exportfs -ra is triggered when changes occur
+#   - Ensure firewall rules allow NFS traffic
+#
+# Example structure:
+#
+# nfs_exports:
+#   - path: /srv/nfs/shared
+#     clients: "192.0.2.0/24(rw,sync,no_subtree_check)"
+#
+#   - path: /srv/nfs/backups
+#     clients: "192.0.2.50(rw,sync)"
+#
+# ==========================================================
 nfs_exports: []
+---
+
+# ==========================================================
+# NFS Mounts Configuration
+# ----------------------------------------------------------
+# Defines a list of NFS mounts managed by this role.
+#
+# Variable: nfs_mounts
+#
+# Type:
+#   list of dictionaries
+#
+# Required keys per item:
+#   - path   (string): Local mount point on the client
+#   - server (string): NFS server hostname or IP address
+#
+# Optional keys:
+#   - target  (string): Exported directory on the NFS server.
+#                       Defaults to the same value as "path".
+#   - options (string): Mount options passed to fstab.
+#                       Defaults to: "rw,_netdev"
+#
+# Notes:
+#   - Mounts are persisted in /etc/fstab.
+#   - If "target" is not defined, the role assumes the exported
+#     path matches the local mount path.
+#   - Ensure the NFS client package is installed on the system.
+#
+# Example structure:
+#
+# nfs_mounts:
+#   - path: /mnt/app_data
+#     server: 192.0.2.10
+#     target: /exports/app_data
+#
+#   - path: /mnt/backups
+#     server: nfs-storage.internal.example
+#     options: "rw,_netdev,nofail,x-systemd.automount"
+#
+# ==========================================================
 nfs_mounts: []
+---

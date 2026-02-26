@@ -19,3 +19,4 @@ nfs_exports:
 
 nfs_mounts:
   - path: /mnt/lidarr
+    server: 192.168.1.11
