@@ -1,5 +1,5 @@
 # Setup
-k8s_version: v1.33
+k8s_version: v1.35
 k8s_cluster_name: kubernetes
 k8s_advertise_address: "{{ ansible_default_ipv4.address }}"
 k8s_bind_port: 6443
