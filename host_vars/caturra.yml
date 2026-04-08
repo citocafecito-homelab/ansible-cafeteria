@@ -16,10 +16,12 @@ nfs_exports:
   - path: /mnt/music
   - path: /mnt/lidarr
 
-nfs_mounts: 
-  - path: /mnt/downloads
-    server: 192.168.1.12
+nfs_mounts: []
 
-  - path: /mnt/backups
-    server: 192.168.1.12
-    options: "rw,_netdev,nofail,x-systemd.automount"
+# nfs_mounts: 
+#   - path: /media/downloads
+#     server: 192.168.1.12
+
+#   - path: /media/backups
+#     server: 192.168.1.12
+#     options: "rw,_netdev,nofail,x-systemd.automount"
