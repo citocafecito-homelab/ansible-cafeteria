@@ -27,6 +27,7 @@ nfs_client_enabled: true
 nfs_exports:
   - path: /mnt/ring-mqtt
   - path: /media/downloads
+  - path: /media/multimedia
 
 nfs_mounts:
   - path: /mnt/lidarr
