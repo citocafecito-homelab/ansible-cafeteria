@@ -62,3 +62,13 @@
     group: root
     mode: "0755"
     creates: /opt/cni/bin/bridge
+
+- name: Create symlinks from /opt/cni/bin to /usr/lib/cni
+  become: true
+  ansible.builtin.file:
+    src: "{{ item.path }}"
+    dest: "/usr/lib/cni/{{ item.path | basename }}"
+    state: link
+  loop: "{{ cni_plugins.files }}"
+  loop_control:
+    label: "{{ item.path | basename }}"
