@@ -1,16 +1,16 @@
 - name: Set Facts
   ansible.builtin.set_fact:
-    install_dir: /tmp/install_direnv.sh
+    dev_tools_installation_path: /tmp/dev_tools_installation_pathenv.sh
 
 - name: Download Direnv installation script
   ansible.builtin.get_url:
     url: https://direnv.net/install.sh
-    dest: "{{ install_dir }}"
+    dest: "{{ dev_tools_installation_path }}"
     mode: "0755"
 
 - name: Install Direnv
   ansible.builtin.command:
-    cmd: "{{ install_dir }}"
+    cmd: "{{ dev_tools_installation_path }}"
     creates: "{{ install_bin_path }}/direnv"
   environment:
     bin_path: "{{ install_bin_path }}"
@@ -21,8 +21,8 @@
     path: /etc/bash.bashrc
     line: 'eval "$(direnv hook bash)"'
     state: present
-    create: yes
-    
+    create: true
+
 - name: Add Direnv completions to /etc/profile.d/direnv.sh (for all users)
   become: true
   ansible.builtin.copy:

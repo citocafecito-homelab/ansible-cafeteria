@@ -15,9 +15,9 @@
 - name: Verify /dev/dri exists
   ansible.builtin.stat:
     path: /dev/dri/renderD128
-  register: dri_device
+  register: intel_graphics_device
 
 - name: Fail if VA-API device is missing
   ansible.builtin.fail:
     msg: "/dev/dri/renderD128 not found. GPU or driver not available."
-  when: not dri_device.stat.exists
+  when: not intel_graphics_device.stat.exists

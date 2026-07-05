@@ -1,6 +1,6 @@
 - name: Set Facts
   ansible.builtin.set_fact:
-    install_bin_path: >-
+    dev_tools_installation_path: >-
       {% if ansible_distribution_release in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue'] %}
       /home/linuxbrew/.linuxbrew/bin
       {% else %}
@@ -9,7 +9,7 @@
 
 - name: Ensure Bin Path Exists
   ansible.builtin.file:
-    path: "{{ install_bin_path }}"
+    path: "{{ dev_tools_installation_path }}"
     state: directory
     mode: "0755"
 
