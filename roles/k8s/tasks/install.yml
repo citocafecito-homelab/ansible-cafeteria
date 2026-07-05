@@ -57,18 +57,11 @@
   become: true
   ansible.builtin.unarchive:
     src: "/tmp/cni-plugins-{{ k8s_cni_plugin_version }}.tgz"
-    dest: /opt/cni/bin
+    dest: "{{ item }}"
     owner: root
     group: root
     mode: "0755"
-    creates: /opt/cni/bin/bridge
-
-- name: Create symlinks from /opt/cni/bin to /usr/lib/cni
-  become: true
-  ansible.builtin.file:
-    src: "{{ item.path }}"
-    dest: "/usr/lib/cni/{{ item.path | basename }}"
-    state: link
-  loop: "{{ cni_plugins.files }}"
-  loop_control:
-    label: "{{ item.path | basename }}"
+    creates: "{{ item }}/bridge"
+  loop:
+    - /usr/lib/cni
+    - /opt/cni/bin
