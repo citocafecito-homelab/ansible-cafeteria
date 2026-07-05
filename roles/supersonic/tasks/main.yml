@@ -21,12 +21,13 @@
     url: https://api.github.com/repos/dweymouth/supersonic/releases/latest
     return_content: true
     force: false
-  register: github_api
+  register: supersonic_release_uri
 
 - name: Set release tag
   ansible.builtin.set_fact:
-    supersonic_latest_tag: "{{ github_api.json.tag_name }}"
-    supersonic_latest_name: "{{ github_api.json.name }}"
+    supersonic_uri: https://github.com/dweymouth/supersonic/releases/download
+    supersonic_latest_tag: "{{ supersonic_release_uri.json.tag_name }}"
+    supersonic_latest_name: "{{ supersonic_release_uri.json.name }}"
     supersonic_binary_path: /usr/local/bin/supersonic
 
 - name: Ensure icon directories exist
@@ -43,9 +44,9 @@
 
 - name: Download Latest Version ({{ supersonic_latest_tag }})
   become: true
-  register: compressed
+  register: supersonic_compressed
   ansible.builtin.get_url:
-    url: "https://github.com/dweymouth/supersonic/releases/download/{{ supersonic_latest_tag }}/Supersonic-{{ supersonic_latest_name }}-linux-x64-libmpv2.tar.xz"
+    url: "{{ supersonic_uri }}/{{ supersonic_latest_tag }}/Supersonic-{{ supersonic_latest_name }}-linux-x64-libmpv2.tar.xz"
     dest: "/tmp/supersonic.tar.xz"
     mode: '0644'
     force: false
@@ -53,7 +54,7 @@
 - name: Extract Supersonic ({{ supersonic_latest_tag }})
   become: true
   ansible.builtin.unarchive:
-    src: "{{ compressed.dest }}"
+    src: "{{ supersonic_compressed.dest }}"
     dest: /tmp/supersonic
     remote_src: true
     mode: '0755'

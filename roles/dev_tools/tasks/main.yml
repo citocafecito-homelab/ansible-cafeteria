@@ -1,6 +1,11 @@
 - name: Set Facts
   ansible.builtin.set_fact:
-    install_bin_path: "{{ '/home/linuxbrew/.linuxbrew/bin' if ansible_distribution_release in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue'] else ansible_env.HOME + '/.local/bin' }}"
+    install_bin_path: >-
+      {% if ansible_distribution_release in ['Bazzite', 'Coreos', 'Kinoite', 'Silverblue'] %}
+      /home/linuxbrew/.linuxbrew/bin
+      {% else %}
+      {{ ansible_env.HOME }}/.local/bin
+      {% endif %}
 
 - name: Ensure Bin Path Exists
   ansible.builtin.file:
