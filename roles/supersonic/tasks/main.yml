@@ -25,9 +25,9 @@
 
 - name: Set release tag
   ansible.builtin.set_fact:
-    latest_tag: "{{ github_api.json.tag_name }}"
-    latest_name: "{{ github_api.json.name }}"
-    binary_path: /usr/local/bin/supersonic
+    supersonic_latest_tag: "{{ github_api.json.tag_name }}"
+    supersonic_latest_name: "{{ github_api.json.name }}"
+    supersonic_binary_path: /usr/local/bin/supersonic
 
 - name: Ensure icon directories exist
   become: true
@@ -41,29 +41,29 @@
     - /usr/local/share/pixmaps
     - /usr/local/share/applications
 
-- name: Download Latest Version ({{ latest_tag }})
+- name: Download Latest Version ({{ supersonic_latest_tag }})
   become: true
   register: compressed
   ansible.builtin.get_url:
-    url: "https://github.com/dweymouth/supersonic/releases/download/{{ latest_tag }}/Supersonic-{{ latest_name }}-linux-x64-libmpv2.tar.xz"
+    url: "https://github.com/dweymouth/supersonic/releases/download/{{ supersonic_latest_tag }}/Supersonic-{{ supersonic_latest_name }}-linux-x64-libmpv2.tar.xz"
     dest: "/tmp/supersonic.tar.xz"
     mode: '0644'
     force: false
 
-- name: Extract Supersonic ({{ latest_tag }})
+- name: Extract Supersonic ({{ supersonic_latest_tag }})
   become: true
   ansible.builtin.unarchive:
     src: "{{ compressed.dest }}"
     dest: /tmp/supersonic
     remote_src: true
     mode: '0755'
-    creates: "/tmp/supersonic{{ binary_path }}"
+    creates: "/tmp/supersonic{{ supersonic_binary_path }}"
 
 - name: Install Supersonic binary
   become: true
   ansible.builtin.copy:
-    src: "/tmp/supersonic{{ binary_path }}"
-    dest: "{{ binary_path }}"
+    src: "/tmp/supersonic{{ supersonic_binary_path }}"
+    dest: "{{ supersonic_binary_path }}"
     remote_src: true
     mode: "0755"
 
@@ -81,7 +81,7 @@
 - name: Check Permissions
   become: true
   ansible.builtin.file:
-    path: "{{ binary_path }}"
+    path: "{{ supersonic_binary_path }}"
     owner: root
     group: root
     mode: '0755'
@@ -97,7 +97,7 @@
       [Desktop Entry]
       Type=Application
       Name=Supersonic
-      Exec="{{ binary_path }}"
+      Exec="{{ supersonic_binary_path }}"
       Icon=supersonic
       Comment=A lightweight cross-platform desktop client for self-hosted music servers
       Categories=Audio;AudioVideo;

@@ -13,26 +13,14 @@ nfs_server_enabled: true
 nfs_client_enabled: true
 
 nfs_exports:
-- path: /mnt/music
-- path: /mnt/lidarr
+  - path: /mnt/music
+  - path: /mnt/lidarr
 
-<<<<<<< HEAD
-nfs_mounts: []
-
-# nfs_mounts: 
-#   - path: /media/downloads
-#     server: 192.168.1.12
-
-#   - path: /media/backups
-#     server: 192.168.1.12
-#     options: "rw,_netdev,nofail,x-systemd.automount"
-=======
 nfs_mounts:
-- path: /media/downloads
-  server: 192.168.1.10
-  options: "rw,_netdev,nofail,x-systemd.automount"
+  - path: /media/downloads
+    server: 192.168.1.10
+    options: "rw,_netdev,nofail,x-systemd.automount"
 
-- path: /media/multimedia
-  server: 192.168.1.10
-  options: "rw,_netdev,nofail,x-systemd.automount"
->>>>>>> 8cae4d0 (feat(cafeteria): added catimore node worker)
+  - path: /media/multimedia
+    server: 192.168.1.10
+    options: "rw,_netdev,nofail,x-systemd.automount"

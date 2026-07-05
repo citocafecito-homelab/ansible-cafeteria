@@ -24,33 +24,10 @@ nfs_enabled: true
 nfs_server_enabled: true
 nfs_client_enabled: true
 
-<<<<<<< HEAD
-nfs_exports: 
-  - path: /mnt/ring-mqtt
-
-nfs_mounts: 
-  - path: /mnt/lidarr
-    server: 192.168.1.11
-
-# nfs_mounts: 
-#   - path: /mnt/downloads
-#     server: 192.168.1.12
-
-#  - path: /mnt/backups
-#     server: 192.168.1.12
-#     options: "rw,_netdev,nofail,x-systemd.automount"
-=======
 nfs_exports:
-- path: /mnt/ring-mqtt
-- path: /mnt/matter-server
-- path: /media/downloads
-- path: /media/multimedia
+  - path: /mnt/ring-mqtt
+  - path: /media/downloads
 
 nfs_mounts:
-- path: /mnt/downloads
-  server: 192.168.1.12
-
-- path: /mnt/backups
-  server: 192.168.1.12
-  options: "rw,_netdev,nofail,x-systemd.automount"
->>>>>>> 8cae4d0 (feat(cafeteria): added catimore node worker)
+  - path: /mnt/lidarr
+    server: 192.168.1.11

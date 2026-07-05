@@ -46,7 +46,10 @@
 
 - name: Download CNI plugins to Runner
   ansible.builtin.get_url:
-    url: "https://github.com/containernetworking/plugins/releases/download/{{ k8s_cni_plugin_version }}/cni-plugins-linux-amd64-{{ k8s_cni_plugin_version }}.tgz"
+    url: >-
+      https://github.com/containernetworking/plugins/releases/download/{{
+      k8s_cni_plugin_version }}/cni-plugins-linux-amd64-{{
+      k8s_cni_plugin_version }}.tgz
     dest: "/tmp/cni-plugins-{{ k8s_cni_plugin_version }}.tgz"
     force: false
 

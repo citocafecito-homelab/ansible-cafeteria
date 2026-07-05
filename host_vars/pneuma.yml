@@ -14,9 +14,7 @@ vault_install: true
 # ------------------------------------------------------------------------------
 # Development Tools
 # ------------------------------------------------------------------------------
-dev_tools_enabled: true
-
-dev_tools:
+dev_tools_enabled:
   chrome: true
   direnv: true
   gh: false

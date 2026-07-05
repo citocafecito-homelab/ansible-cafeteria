@@ -1,6 +1,4 @@
 dev_tools_enabled:
-
-dev_tools:
   chrome: false
   direnv: false
   gh: false

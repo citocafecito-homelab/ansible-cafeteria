@@ -15,7 +15,7 @@
     mode: '0644'
 
 - name: Set sysctl parameters for Kubernetes networking
-  register: sysctl_conf
+  register: k8s_sysctl_conf
   become: true
   ansible.builtin.copy:
     dest: /etc/sysctl.d/k8s.conf
@@ -31,4 +31,4 @@
   become: true
   ansible.builtin.command:
     cmd: sysctl --system
-  changed_when: sysctl_conf.changed
+  changed_when: k8s_sysctl_conf.changed
