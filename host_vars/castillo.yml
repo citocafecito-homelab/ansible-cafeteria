@@ -15,8 +15,16 @@ nfs_client_enabled: true
 nfs_exports:
   - path: /media/multimedia2
   - path: /media/downloads
-  # - path: /mnt/backups
 
 nfs_mounts:
-  - path: /mnt/lidarr
-    server: 192.168.1.11
+- path: /mnt/lidarr
+  server: 192.168.1.11
+
+- path: /mnt/music
+  server: 192.168.1.11
+
+- path: /media/downloads
+  server: 192.168.1.10
+
+- path: /media/multimedia
+  server: 192.168.1.10
