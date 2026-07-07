@@ -16,9 +16,6 @@ nfs_exports:
   - path: /media/multimedia2
 
 nfs_mounts:
-  - path: /mnt/lidarr
-    server: 192.168.1.13
-
   - path: /mnt/music
     server: 192.168.1.13
 
