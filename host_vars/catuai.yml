@@ -29,6 +29,4 @@ nfs_exports:
   - path: /media/downloads
   - path: /media/multimedia
 
-nfs_mounts:
-  - path: /mnt/lidarr
-    server: 192.168.1.11
+nfs_mounts: []
