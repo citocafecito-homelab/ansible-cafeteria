@@ -105,3 +105,32 @@ jobs:
           uv run ansible-playbook playbooks/main.yml \
             --user barista \
             --ssh-common-args="-F $HOME/.ssh/config"
+
+      - name: Notify
+        if: always()
+        run: |
+          COMMIT_MSG="${{ github.event.head_commit.message || 'Ejecución Manual' }}"
+          
+          # Generar la URL directa a este run específico de GitHub Actions
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+          if [ "${{ job.status }}" = "success" ]; then
+            STATUS_TITLE="☕ Ansible Playbook Exitoso"
+            STATUS_TAGS="coffee,ansible,white_check_mark"
+            STATUS_PRIORITY="default"
+            MSG="Se aplicó correctamente el playbook en la rama ${{ github.ref_name }}. Cambio: $COMMIT_MSG"
+          else
+            STATUS_TITLE="🚨 Ansible Playbook Fallido"
+            STATUS_TAGS="coffee,ansible,x"
+            STATUS_PRIORITY="high"
+            MSG="Falló la ejecución del playbook en ${{ github.ref_name }}. Revisar logs para: $COMMIT_MSG"
+          fi
+
+          curl -H "Authorization: Bearer ${{ secrets.NTFY_TOKEN }}" \
+               -H "Title: ${STATUS_TITLE}" \
+               -H "Tags: ${STATUS_TAGS}" \
+               -H "Priority: ${STATUS_PRIORITY}" \
+               -H "Actions: view, Ver Logs, ${RUN_URL}" \
+               -H "X-Repository: ${{ github.repository }}" \
+               -d "$MSG" \
+               http://ntfy.core.svc.cluster.local/github-actions
