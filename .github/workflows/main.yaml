@@ -131,7 +131,6 @@ jobs:
           # 3. Estructurar el reporte con formato limpio (removiendo espacios en blanco iniciales)
           REPORT_BODY=$(cat <<EOF
           Estatus: $RESULT_EMOJI
-          Repositorio: ${{ github.repository }}
           Rama: ${{ github.ref_name }}
           Commit: $SHORT_SHA ($AUTHOR)
           
@@ -143,6 +142,7 @@ jobs:
           # 4. Enviar a ntfy agregando botones de acción múltiples (Ver logs y Ver Repositorio)
           curl -s -o /dev/null -w "%{http_code}" \
                -H "Authorization: Bearer ${{ secrets.NTFY_TOKEN }}" \
+               -H "Icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/github.png" \
                -H "Title: ${{ github.repository }}"" \
                -H "Tags: ${STATUS_TAGS}" \
                -H "Priority: ${STATUS_PRIORITY}" \
