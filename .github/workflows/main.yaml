@@ -119,12 +119,10 @@ jobs:
           
           # 2. Configurar alertas dinámicas según el estado
           if [ "${{ job.status }}" = "success" ]; then
-            STATUS_TITLE="☕ Ansible: Despliegue Exitoso"
             STATUS_TAGS="coffee,white_check_mark"
             STATUS_PRIORITY="default"
             RESULT_EMOJI="✅ SUCCESS"
           else
-            STATUS_TITLE="🚨 Ansible: Despliegue Fallido"
             STATUS_TAGS="coffee,x,rotating_light"
             STATUS_PRIORITY="high"
             RESULT_EMOJI="❌ FAILURE"
@@ -145,7 +143,7 @@ jobs:
           # 4. Enviar a ntfy agregando botones de acción múltiples (Ver logs y Ver Repositorio)
           curl -s -o /dev/null -w "%{http_code}" \
                -H "Authorization: Bearer ${{ secrets.NTFY_TOKEN }}" \
-               -H "Title: ${STATUS_TITLE}" \
+               -H "Title: ${{ github.repository }}"" \
                -H "Tags: ${STATUS_TAGS}" \
                -H "Priority: ${STATUS_PRIORITY}" \
                -H "Actions: view, Ver Logs, ${RUN_URL}; view, Ir al Repo, ${REPO_URL}" \
